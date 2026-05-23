@@ -33,7 +33,7 @@ UI primitive contracts in:
 
 ## Quick Start
 
-Prerequisites: Node.js 20+, pnpm 9+, Docker (for local Supabase).
+Prerequisites: Node.js 20+ and pnpm 9+.
 
 The Supabase CLI is expected from project dev dependencies after `pnpm install`.
 If you see `supabase: not found`, install it with:
@@ -44,10 +44,9 @@ pnpm add -D supabase
 
 ```bash
 pnpm install
-cp .env.example .env       # fill in values
-pnpm db:start              # local Supabase (Docker)
-pnpm db:migrate            # apply migrations
-pnpm db:types              # generate TS types
+cp .env.example .env       # fill in hosted Supabase values
+pnpm db:push               # apply migrations to hosted Supabase
+pnpm db:types:linked       # generate TS types from hosted Supabase
 pnpm dev                   # http://localhost:5173
 ```
 
@@ -71,11 +70,10 @@ pnpm exec playwright install chromium
 - `pnpm test:a11y:full` — strict full-route accessibility suite
 - `pnpm test:all` — full suite
 - `pnpm tokens:check-contrast` — WCAG contrast checks for design tokens
-- `pnpm db:start` / `pnpm db:stop` — local Supabase
 - `pnpm db:migration:new <name>` — new migration
-- `pnpm db:migrate` — apply migrations
-- `pnpm db:reset` — reset local DB
-- `pnpm db:types` — regenerate `src/lib/types/database.types.ts`
+- `pnpm db:push` — apply migrations to hosted Supabase
+- `pnpm db:types:linked` — regenerate `src/lib/types/database.types.ts`
+- `pnpm db:seed` — create/reset the hosted dev user via Supabase Admin API
 - `pnpm init-project` — initialize this template for a new project (one-time)
 
 ## Project Structure
@@ -101,7 +99,7 @@ To start a new project from this template:
 pnpm init-project
 ```
 
-It asks: project name, description, repo URL, whether to keep the optional auth module, local vs remote Supabase, and a base brand color. Then it replaces placeholders across the repo and prints the next steps.
+It asks: project name, description, repo URL, whether to keep the optional auth module, author, and license year. Then it replaces placeholders across the repo and prints the next steps.
 
 See [`docs/`](./docs) for the full picture.
 

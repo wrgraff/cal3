@@ -142,8 +142,8 @@ async function configureContent({
 		'PUBLIC_SUPABASE_URL="https://your-project-ref.supabase.co"'
 	);
 	envExample = envExample.replace(
-		/PUBLIC_SUPABASE_ANON_KEY="[^"]*"/,
-		'PUBLIC_SUPABASE_ANON_KEY="your-anon-key-here"'
+		/PUBLIC_SUPABASE_PUBLISHABLE_KEY="[^"]*"/,
+		'PUBLIC_SUPABASE_PUBLISHABLE_KEY="your-publishable-key-here"'
 	);
 
 	if (!keepAuth) {
@@ -253,7 +253,7 @@ async function main() {
 		console.log('Next steps:');
 		console.log('1. cp .env.example .env');
 		console.log(
-			'2. Fill in PUBLIC_SUPABASE_URL and PUBLIC_SUPABASE_ANON_KEY from Supabase Dashboard.'
+			'2. Fill in PUBLIC_SUPABASE_URL and PUBLIC_SUPABASE_PUBLISHABLE_KEY from Supabase Dashboard.'
 		);
 		console.log('3. pnpm check && pnpm lint && pnpm test && pnpm build');
 		console.log('4. Commit the initialized project.');

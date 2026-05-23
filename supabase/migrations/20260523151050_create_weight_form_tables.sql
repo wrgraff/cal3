@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS public.notes;
-
 CREATE TYPE public.weight_entry_tag AS ENUM (
 	'late_dinner',
 	'alcohol',

@@ -62,14 +62,14 @@ In Authentication → SMTP Settings, configure outbound email if you use magic l
 
 Netlify → Site configuration → Environment variables. Add:
 
-| Key                         | Value                                                    | Scope                           |
-| --------------------------- | -------------------------------------------------------- | ------------------------------- |
-| `PUBLIC_SUPABASE_URL`       | Your hosted Supabase project URL                         | All scopes                      |
-| `PUBLIC_SUPABASE_ANON_KEY`  | Your hosted anon key                                     | All scopes                      |
-| `PUBLIC_APP_URL`            | Your production URL (e.g. `https://yourapp.netlify.app`) | Production only                 |
-| `SUPABASE_SERVICE_ROLE_KEY` | Service role key (if used)                               | Production only, mark as secret |
-| `ADMIN_EMAILS`              | Comma-separated emails                                   | Production only                 |
-| `PNPM_VERSION`              | `9`                                                      | Builds                          |
+| Key                               | Value                                                    | Scope                           |
+| --------------------------------- | -------------------------------------------------------- | ------------------------------- |
+| `PUBLIC_SUPABASE_URL`             | Your hosted Supabase project URL                         | All scopes                      |
+| `PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Your hosted publishable key                              | All scopes                      |
+| `PUBLIC_APP_URL`                  | Your production URL (e.g. `https://yourapp.netlify.app`) | Production only                 |
+| `SUPABASE_SERVICE_ROLE_KEY`       | Service role key (if used)                               | Production only, mark as secret |
+| `ADMIN_EMAILS`                    | Comma-separated emails                                   | Production only                 |
+| `PNPM_VERSION`                    | `9`                                                      | Builds                          |
 
 Get the Supabase keys from Project Settings → API.
 
@@ -169,7 +169,7 @@ Run `node build/index.js` behind a reverse proxy. Need to handle process managem
 | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | Build fails: `Cannot find module '@supabase/ssr'` | `pnpm install` issues. Check Netlify build logs — possibly `engine-strict` failing. Ensure `NODE_VERSION = "20"` in `netlify.toml`. |
 | Build succeeds but the site shows blank page      | Env vars missing or misnamed. Check browser console for "URL is undefined".                                                         |
-| 401/403 on data queries in prod                   | Wrong anon key, or wrong Site URL in Supabase causing OAuth bounce. Verify keys match the hosted project, not the local one.        |
+| 401/403 on data queries in prod                   | Wrong publishable key, or wrong Site URL in Supabase causing OAuth bounce. Verify keys match the hosted project.                    |
 | OAuth redirect goes to localhost in prod          | Site URL not updated in Supabase Auth settings.                                                                                     |
 | Service worker shows stale content                | `autoUpdate` strategy waits for the next reload. Force-refresh, or check Application → Service Workers in DevTools.                 |
 | `Function exceeded the maximum allowed duration`  | Long-running server route — move work to a background job or stream the response.                                                   |

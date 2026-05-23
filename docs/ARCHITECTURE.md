@@ -125,7 +125,7 @@ Vercel and Cloudflare Pages are also good choices — switching adapters is a on
 ```
 Browser                          Server                      Supabase
 ─────────────────────────────────────────────────────────────────────
-src/lib/supabase.ts        →   anon key + RLS         →     Postgres
+src/lib/supabase.ts        →   publishable key + RLS  →     Postgres
 (browser-side client)          (subject to user's
                                 session cookie)
 
@@ -138,7 +138,7 @@ src/routes/.../+server.ts  →   src/lib/server/         →     Postgres
 Two clients:
 
 - **Browser client** (`$lib/supabase.ts`) — uses the anonymous public key. All queries are bound by the signed-in user's session (via cookies) and by RLS policies on the tables. Safe to expose to the page bundle.
-- **Server client** (`$lib/server/supabase.ts`) — created per-request in `hooks.server.ts`. Either user-scoped (anon key, but reads cookies → respects the user's session) or admin-scoped (service-role key — never sent to the browser, used for tasks like seeding or trusted background work).
+- **Server client** (`$lib/server/supabase.ts`) — created per-request in `hooks.server.ts`. Either user-scoped (publishable key, but reads cookies → respects the user's session) or admin-scoped (service-role key — never sent to the browser, used for tasks like seeding or trusted background work).
 
 Most reads and writes go through the user-scoped clients. RLS is what makes this safe.
 

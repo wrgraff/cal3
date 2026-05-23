@@ -1,5 +1,5 @@
 import { createServerClient, type CookieMethodsServer } from '@supabase/ssr';
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_PUBLISHABLE_KEY } from '$env/static/public';
 import type { Database } from '$lib/types/database.types';
 
 /**
@@ -19,7 +19,7 @@ import type { Database } from '$lib/types/database.types';
  * See docs/DATABASE.md → Browser vs Server Clients.
  */
 export function createSupabaseServerClient(cookies: CookieMethodsServer) {
-	return createServerClient<Database>(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
+	return createServerClient<Database>(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_PUBLISHABLE_KEY, {
 		cookies
 	});
 }

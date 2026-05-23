@@ -11,10 +11,10 @@ This project uses a **hosted Supabase project** — no local Docker required. Mi
 ### First-time
 
 1. Create a project at <https://supabase.com> → **New project**.
-2. Project Settings → API → copy **Project URL** and **anon public** key into `.env`:
+2. Project Settings → API → copy **Project URL** and **publishable** key into `.env`:
    ```env
    PUBLIC_SUPABASE_URL=https://<ref>.supabase.co
-   PUBLIC_SUPABASE_ANON_KEY=<anon-key>
+   PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-key>
    ```
 3. Link the CLI and push the schema:
    ```bash
@@ -49,7 +49,7 @@ Supabase Studio: <https://supabase.com/dashboard> → your project → Table Edi
 
 ## Row Level Security (RLS)
 
-RLS is the authorization layer. The anon key is "public" — anyone with it can attempt any query. RLS policies decide which queries actually succeed.
+RLS is the authorization layer. The publishable key is public — anyone with it can attempt a query. RLS policies decide which queries actually succeed.
 
 **Every table must have RLS enabled.** Tables without policies are inaccessible by default — that is the safe state.
 
@@ -130,12 +130,12 @@ Two clients live in the code:
 
 ```ts
 import { createBrowserClient } from '@supabase/ssr';
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_PUBLISHABLE_KEY } from '$env/static/public';
 import type { Database } from '$lib/types/database.types';
 
 export const supabase = createBrowserClient<Database>(
   PUBLIC_SUPABASE_URL,
-  PUBLIC_SUPABASE_ANON_KEY
+  PUBLIC_SUPABASE_PUBLISHABLE_KEY
 );
 ```
 
