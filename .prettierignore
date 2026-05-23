@@ -21,7 +21,6 @@ supabase/.branches
 supabase/.temp
 
 # Misc
-.claude
 .env
 .env.*
 .netlify
