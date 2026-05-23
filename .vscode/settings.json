@@ -1,0 +1,79 @@
+{
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.formatOnSave": true,
+	"editor.tabSize": 2,
+	"editor.insertSpaces": false,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit",
+		"source.organizeImports": "explicit"
+	},
+
+	"[svelte]": {
+		"editor.defaultFormatter": "svelte.svelte-vscode"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+
+	"eslint.validate": ["javascript", "typescript", "svelte"],
+
+	"tailwindCSS.experimental.classRegex": [
+		["class:\\s*([\"'`])([^\"'`]*)\\1", "([^\\s\"'`]+)"],
+		["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+		["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+	],
+	"tailwindCSS.includeLanguages": {
+		"svelte": "html"
+	},
+
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+
+	"files.associations": {
+		"*.css": "tailwindcss"
+	},
+
+	"cSpell.words": [
+		"supabase",
+		"Supabase",
+		"sveltekit",
+		"SvelteKit",
+		"svelte",
+		"Svelte",
+		"oklch",
+		"tailwindcss",
+		"Tailwind",
+		"vite",
+		"Vite",
+		"pnpm",
+		"netlify",
+		"Netlify",
+		"lucide",
+		"workbox",
+		"clsx",
+		"lefthook",
+		"axe",
+		"WCAG",
+		"anon",
+		"pgcrypto",
+		"timestamptz",
+		"TIMESTAMPTZ",
+		"uuid",
+		"UUID",
+		"signin",
+		"signout",
+		"signIn",
+		"signOut"
+	],
+
+	"search.exclude": {
+		"**/.svelte-kit": true,
+		"**/build": true,
+		"**/node_modules": true,
+		"**/prototypes/*": true,
+		"!**/prototypes/*.md": false
+	}
+}
