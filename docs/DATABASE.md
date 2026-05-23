@@ -81,6 +81,8 @@ pnpm db:reset
 
 Drops the local DB, re-applies all migrations, runs `supabase/seed.sql`. Use this when local state is messy or after pulling new migrations.
 
+This also resets Supabase Auth state. Existing browser sessions become stale, even if the same dev user is recreated by `seed.sql`, so sign in again after a reset. During normal feature work, prefer `pnpm db:migrate` and `pnpm db:types` so local users and sessions are preserved.
+
 ### Inspect the schema
 
 Local Supabase Studio runs at <http://127.0.0.1:54323> after `pnpm db:start`. SQL editor, table editor, auth UI — all local.
