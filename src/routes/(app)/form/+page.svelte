@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { WeightFormPage } from '$lib/features/weight-form';
+	import { WeightDashboardPage } from '$lib/features/weight-dashboard';
 	import type { PageData } from './$types';
 
 	interface Props {
@@ -14,4 +14,4 @@
 	<meta name="description" content="Weight and body measurements tracker." />
 </svelte:head>
 
-<WeightFormPage data={data.weightForm} />
+<WeightDashboardPage data={data.weightTracking} />

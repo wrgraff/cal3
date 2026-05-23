@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { ChartRange, DailyWeightMetric, WeightGoal } from './weight-form.types';
+	import type { ChartRange, DailyWeightMetric, WeightGoal } from '$lib/features/weight-tracking';
 	import {
 		addDays,
 		daysBetween,
 		getForecastEndpoint,
 		plannedWeight,
 		prettyDate
-	} from './weight-form.utils';
+	} from '$lib/features/weight-tracking';
 
 	interface Props {
 		metrics: DailyWeightMetric[];

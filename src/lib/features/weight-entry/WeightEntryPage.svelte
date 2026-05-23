@@ -6,17 +6,23 @@
 	import type {
 		WeightEntry,
 		WeightEntryFormValues,
-		WeightFormActionData,
-		WeightFormData,
+		WeightTrackingActionData,
+		WeightTrackingData,
 		WeightTag
-	} from './weight-form.types';
-	import { WEIGHT_TAGS } from './weight-form.types';
-	import { TAG_LABELS, addDays, isIsoDate, prettyDate, todayIso } from './weight-form.utils';
+	} from '$lib/features/weight-tracking';
+	import { WEIGHT_TAGS } from '$lib/features/weight-tracking';
+	import {
+		TAG_LABELS,
+		addDays,
+		isIsoDate,
+		prettyDate,
+		todayIso
+	} from '$lib/features/weight-tracking';
 
 	interface Props {
-		data: WeightFormData;
+		data: WeightTrackingData;
 		initialDate?: string;
-		action?: WeightFormActionData | null;
+		action?: WeightTrackingActionData | null;
 	}
 
 	let { data, initialDate = todayIso(), action = null }: Props = $props();

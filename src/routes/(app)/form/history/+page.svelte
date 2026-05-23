@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { WeightHistoryPage } from '$lib/features/weight-form';
+	import { WeightHistoryPage } from '$lib/features/weight-history';
 	import type { PageData } from './$types';
 
 	interface Props {
@@ -14,4 +14,4 @@
 	<meta name="description" content="Weight, measurements, and goal history." />
 </svelte:head>
 
-<WeightHistoryPage data={data.weightForm} />
+<WeightHistoryPage data={data.weightTracking} />

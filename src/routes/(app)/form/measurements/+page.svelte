@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { BodyMeasurementPage } from '$lib/features/weight-form';
+	import { BodyMeasurementPage } from '$lib/features/body-measurements';
 	import type { ActionData, PageData } from './$types';
 
 	interface Props {
@@ -15,4 +15,4 @@
 	<meta name="description" content="Add or update body measurements." />
 </svelte:head>
 
-<BodyMeasurementPage data={data.weightForm} initialDate={data.initialDate} action={form} />
+<BodyMeasurementPage data={data.weightTracking} initialDate={data.initialDate} action={form} />

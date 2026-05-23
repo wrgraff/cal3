@@ -10,7 +10,7 @@ import type {
 	WeightEntry,
 	WeightGoal,
 	WeightTag
-} from './weight-form.types';
+} from './weight-tracking.types';
 
 export const DEFAULT_WEEKLY_LOSS_KG = 0.5;
 export const MIN_FORECAST_DAYS = 7;

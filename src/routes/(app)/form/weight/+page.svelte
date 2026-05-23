@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { WeightEntryPage } from '$lib/features/weight-form';
+	import { WeightEntryPage } from '$lib/features/weight-entry';
 	import type { ActionData, PageData } from './$types';
 
 	interface Props {
@@ -15,4 +15,4 @@
 	<meta name="description" content="Add or update a daily weight entry." />
 </svelte:head>
 
-<WeightEntryPage data={data.weightForm} initialDate={data.initialDate} action={form} />
+<WeightEntryPage data={data.weightTracking} initialDate={data.initialDate} action={form} />

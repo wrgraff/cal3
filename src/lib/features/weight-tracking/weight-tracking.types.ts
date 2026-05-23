@@ -100,7 +100,7 @@ export interface WeightDashboard {
 	currentDate: string;
 }
 
-export interface WeightFormData {
+export interface WeightTrackingData {
 	entries: WeightEntry[];
 	measurements: BodyMeasurement[];
 	goals: WeightGoal[];
@@ -126,7 +126,7 @@ export interface WeightGoalFormValues {
 	targetWeightKg: string;
 }
 
-export interface WeightFormFieldErrors {
+export interface WeightTrackingFieldErrors {
 	date?: string;
 	morningWeightKg?: string;
 	eveningWeightKg?: string;
@@ -139,16 +139,16 @@ export interface WeightFormFieldErrors {
 	targetWeightKg?: string;
 }
 
-export interface WeightFormActionState<TValues> {
+export interface WeightTrackingActionState<TValues> {
 	values: TValues;
-	fieldErrors?: WeightFormFieldErrors;
+	fieldErrors?: WeightTrackingFieldErrors;
 	formError?: string;
 	message?: string;
 }
 
-export interface WeightFormActionData {
-	weightEntry?: WeightFormActionState<WeightEntryFormValues>;
-	bodyMeasurement?: WeightFormActionState<BodyMeasurementFormValues>;
-	goal?: WeightFormActionState<WeightGoalFormValues>;
+export interface WeightTrackingActionData {
+	weightEntry?: WeightTrackingActionState<WeightEntryFormValues>;
+	bodyMeasurement?: WeightTrackingActionState<BodyMeasurementFormValues>;
+	goal?: WeightTrackingActionState<WeightGoalFormValues>;
 	message?: string;
 }

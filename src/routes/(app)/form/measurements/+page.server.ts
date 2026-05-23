@@ -4,7 +4,7 @@ import {
 	isIsoDate,
 	todayIso,
 	upsertBodyMeasurement
-} from '$lib/features/weight-form/index.server';
+} from '$lib/features/weight-tracking/index.server';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {

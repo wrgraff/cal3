@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
-import type { WeightEntry, WeightGoal } from './weight-form.types';
+import type { WeightEntry, WeightGoal } from './weight-tracking.types';
 import {
 	buildDailyWeightMetrics,
 	calculateTargetDate,
 	deriveWeightDashboard,
 	getForecastEndpoint,
 	plannedWeight
-} from './weight-form.utils';
+} from './weight-tracking.utils';
 
 const goal: WeightGoal = {
 	id: 'goal-1',

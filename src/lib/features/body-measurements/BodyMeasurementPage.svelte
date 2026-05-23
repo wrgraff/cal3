@@ -6,15 +6,15 @@
 	import type {
 		BodyMeasurement,
 		BodyMeasurementFormValues,
-		WeightFormActionData,
-		WeightFormData
-	} from './weight-form.types';
-	import { addDays, isIsoDate, prettyDate, todayIso } from './weight-form.utils';
+		WeightTrackingActionData,
+		WeightTrackingData
+	} from '$lib/features/weight-tracking';
+	import { addDays, isIsoDate, prettyDate, todayIso } from '$lib/features/weight-tracking';
 
 	interface Props {
-		data: WeightFormData;
+		data: WeightTrackingData;
 		initialDate?: string;
-		action?: WeightFormActionData | null;
+		action?: WeightTrackingActionData | null;
 	}
 
 	let { data, initialDate = todayIso(), action = null }: Props = $props();

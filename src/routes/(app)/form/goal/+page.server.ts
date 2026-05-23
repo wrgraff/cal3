@@ -1,5 +1,5 @@
 import { requireUser } from '$lib/auth';
-import { createGoalRevision } from '$lib/features/weight-form/index.server';
+import { createGoalRevision } from '$lib/features/weight-tracking/index.server';
 import type { Actions } from './$types';
 
 export const actions: Actions = {

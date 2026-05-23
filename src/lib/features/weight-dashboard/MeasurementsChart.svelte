@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { BodyMeasurement } from './weight-form.types';
-	import { daysBetween, prettyDate } from './weight-form.utils';
+	import type { BodyMeasurement } from '$lib/features/weight-tracking';
+	import { daysBetween, prettyDate } from '$lib/features/weight-tracking';
 
 	interface Props {
 		measurements: BodyMeasurement[];

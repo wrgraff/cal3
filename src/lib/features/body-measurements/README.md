@@ -1,0 +1,45 @@
+# Body Measurements
+
+## Purpose
+
+The `body-measurements` feature renders the `/form/measurements` screen for adding, editing, and deleting chest, waist, and hips measurements. It does not render weight entry forms, dashboard charts, goal settings, or history tables.
+
+## Public API
+
+Exports from `index.ts`:
+
+- `BodyMeasurementPage: Component<{ data: WeightTrackingData; initialDate?: string; action?: WeightTrackingActionData | null }>`
+  - `data`: measurements loaded by the Form route layout.
+  - `initialDate`: optional selected date from the route query string.
+  - `action`: optional SvelteKit action data for validation and success messages.
+
+## Dependencies
+
+- `$lib/components/ui/Button.svelte`
+- `$lib/components/ui/Card.svelte`
+- `$lib/components/ui/Input.svelte`
+- `$lib/components/ui/Label.svelte`
+- `$lib/components/ui/LinkButton.svelte`
+- `$lib/features/weight-tracking`
+- `@lucide/svelte`
+
+## Database
+
+N/A. Writes are submitted to route actions that call `weight-tracking` server APIs.
+
+## State
+
+- Component-local `$state` owns the selected measurement date and one-time initial date application.
+- Form values are derived from action data and the selected measurement row.
+
+## A11y notes
+
+- Date navigation uses icon-only `<button>` elements with `aria-label`.
+- Inputs have explicit labels and inline validation messages.
+- Form-level errors use `role="alert"`.
+
+## Out of Scope
+
+- Custom measurement fields.
+- Weight entries.
+- Goal revisions.

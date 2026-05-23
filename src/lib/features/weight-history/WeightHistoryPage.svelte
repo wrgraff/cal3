@@ -3,11 +3,16 @@
 
 	import { Card, LinkButton } from '$lib/components/ui';
 
-	import type { WeightFormData } from './weight-form.types';
-	import { TAG_LABELS, deriveWeightDashboard, formatNumber, prettyDate } from './weight-form.utils';
+	import type { WeightTrackingData } from '$lib/features/weight-tracking';
+	import {
+		TAG_LABELS,
+		deriveWeightDashboard,
+		formatNumber,
+		prettyDate
+	} from '$lib/features/weight-tracking';
 
 	interface Props {
-		data: WeightFormData;
+		data: WeightTrackingData;
 	}
 
 	let { data }: Props = $props();

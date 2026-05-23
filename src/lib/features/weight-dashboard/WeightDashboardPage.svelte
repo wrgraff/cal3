@@ -5,17 +5,17 @@
 
 	import MeasurementsChart from './MeasurementsChart.svelte';
 	import WeightChart from './WeightChart.svelte';
-	import type { ChartRange, WeightFormData } from './weight-form.types';
+	import type { ChartRange, WeightTrackingData } from '$lib/features/weight-tracking';
 	import {
 		STATUS_LABELS,
 		deriveWeightDashboard,
 		formatNumber,
 		prettyDate,
 		todayIso
-	} from './weight-form.utils';
+	} from '$lib/features/weight-tracking';
 
 	interface Props {
-		data: WeightFormData;
+		data: WeightTrackingData;
 	}
 
 	let { data }: Props = $props();

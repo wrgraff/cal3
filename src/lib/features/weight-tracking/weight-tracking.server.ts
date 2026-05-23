@@ -7,15 +7,15 @@ import type {
 	BodyMeasurementFormValues,
 	WeightEntry,
 	WeightEntryFormValues,
-	WeightFormActionData,
+	WeightTrackingActionData,
 	WeightGoal,
 	WeightGoalFormValues,
 	WeightTag
-} from './weight-form.types';
-import { WEIGHT_TAGS } from './weight-form.types';
-import { coerceNullableNumber, isIsoDate } from './weight-form.utils';
+} from './weight-tracking.types';
+import { WEIGHT_TAGS } from './weight-tracking.types';
+import { coerceNullableNumber, isIsoDate } from './weight-tracking.utils';
 
-interface WeightFormServerContext {
+interface WeightTrackingServerContext {
 	supabase: App.Locals['supabase'];
 	userId: string;
 }
@@ -110,7 +110,7 @@ function mapGoal(row: WeightGoalRow): WeightGoal {
 	};
 }
 
-export async function loadWeightFormData(context: WeightFormServerContext) {
+export async function loadWeightTrackingData(context: WeightTrackingServerContext) {
 	const supabase = typedSupabase(context.supabase);
 	const [entriesResult, tagsResult, measurementsResult, goalsResult] = await Promise.all([
 		supabase
@@ -185,12 +185,12 @@ function parseGoalForm(formData: FormData): WeightGoalFormValues {
 	};
 }
 
-export async function upsertWeightEntry(context: WeightFormServerContext, formData: FormData) {
+export async function upsertWeightEntry(context: WeightTrackingServerContext, formData: FormData) {
 	const supabase = typedSupabase(context.supabase);
 	const values = parseWeightEntryForm(formData);
 	const morningWeightKg = coerceNullableNumber(values.morningWeightKg);
 	const eveningWeightKg = coerceNullableNumber(values.eveningWeightKg);
-	const fieldErrors: NonNullable<WeightFormActionData['weightEntry']>['fieldErrors'] = {};
+	const fieldErrors: NonNullable<WeightTrackingActionData['weightEntry']>['fieldErrors'] = {};
 
 	if (!isIsoDate(values.date)) fieldErrors.date = 'Choose a valid date.';
 	if (Number.isNaN(morningWeightKg))
@@ -225,7 +225,7 @@ export async function upsertWeightEntry(context: WeightFormServerContext, formDa
 	return { message: 'Weight entry saved.' };
 }
 
-export async function deleteWeightEntry(context: WeightFormServerContext, formData: FormData) {
+export async function deleteWeightEntry(context: WeightTrackingServerContext, formData: FormData) {
 	const supabase = typedSupabase(context.supabase);
 	const id = getString(formData, 'id');
 	if (!id) {
@@ -245,13 +245,16 @@ export async function deleteWeightEntry(context: WeightFormServerContext, formDa
 	return { message: 'Weight entry deleted.' };
 }
 
-export async function upsertBodyMeasurement(context: WeightFormServerContext, formData: FormData) {
+export async function upsertBodyMeasurement(
+	context: WeightTrackingServerContext,
+	formData: FormData
+) {
 	const supabase = typedSupabase(context.supabase);
 	const values = parseBodyMeasurementForm(formData);
 	const chestCm = coerceNullableNumber(values.chestCm);
 	const waistCm = coerceNullableNumber(values.waistCm);
 	const hipsCm = coerceNullableNumber(values.hipsCm);
-	const fieldErrors: NonNullable<WeightFormActionData['bodyMeasurement']>['fieldErrors'] = {};
+	const fieldErrors: NonNullable<WeightTrackingActionData['bodyMeasurement']>['fieldErrors'] = {};
 
 	if (!isIsoDate(values.date)) fieldErrors.date = 'Choose a valid date.';
 	if (Number.isNaN(chestCm)) fieldErrors.chestCm = 'Chest must be a number.';
@@ -285,7 +288,10 @@ export async function upsertBodyMeasurement(context: WeightFormServerContext, fo
 	return { message: 'Body measurement saved.' };
 }
 
-export async function deleteBodyMeasurement(context: WeightFormServerContext, formData: FormData) {
+export async function deleteBodyMeasurement(
+	context: WeightTrackingServerContext,
+	formData: FormData
+) {
 	const supabase = typedSupabase(context.supabase);
 	const id = getString(formData, 'id');
 	if (!id) {
@@ -305,12 +311,12 @@ export async function deleteBodyMeasurement(context: WeightFormServerContext, fo
 	return { message: 'Body measurement deleted.' };
 }
 
-export async function createGoalRevision(context: WeightFormServerContext, formData: FormData) {
+export async function createGoalRevision(context: WeightTrackingServerContext, formData: FormData) {
 	const supabase = typedSupabase(context.supabase);
 	const values = parseGoalForm(formData);
 	const startWeightKg = coerceNullableNumber(values.startWeightKg);
 	const targetWeightKg = coerceNullableNumber(values.targetWeightKg);
-	const fieldErrors: NonNullable<WeightFormActionData['goal']>['fieldErrors'] = {};
+	const fieldErrors: NonNullable<WeightTrackingActionData['goal']>['fieldErrors'] = {};
 
 	if (!isIsoDate(values.startDate)) fieldErrors.startDate = 'Choose a valid start date.';
 	if (Number.isNaN(startWeightKg) || startWeightKg == null || startWeightKg <= 0) {

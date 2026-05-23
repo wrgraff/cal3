@@ -4,20 +4,20 @@
 	import { Button, Card, Input, Label, LinkButton } from '$lib/components/ui';
 
 	import type {
-		WeightFormActionData,
-		WeightFormData,
+		WeightTrackingActionData,
+		WeightTrackingData,
 		WeightGoalFormValues
-	} from './weight-form.types';
+	} from '$lib/features/weight-tracking';
 	import {
 		DEFAULT_WEEKLY_LOSS_KG,
 		calculateTargetDate,
 		deriveWeightDashboard,
 		prettyDate
-	} from './weight-form.utils';
+	} from '$lib/features/weight-tracking';
 
 	interface Props {
-		data: WeightFormData;
-		action?: WeightFormActionData | null;
+		data: WeightTrackingData;
+		action?: WeightTrackingActionData | null;
 	}
 
 	let { data, action = null }: Props = $props();

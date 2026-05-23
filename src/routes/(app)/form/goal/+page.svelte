@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { GoalRevisionPage } from '$lib/features/weight-form';
+	import { WeightGoalPage } from '$lib/features/weight-goal';
 	import type { ActionData, PageData } from './$types';
 
 	interface Props {
@@ -15,4 +15,4 @@
 	<meta name="description" content="Update the active weight goal." />
 </svelte:head>
 
-<GoalRevisionPage data={data.weightForm} action={form} />
+<WeightGoalPage data={data.weightTracking} action={form} />
