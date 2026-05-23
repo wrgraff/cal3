@@ -8,7 +8,7 @@ export const APP_TABS: AppTab[] = [
 ];
 
 export function getActiveTabId(pathname: string): AppTabId {
-	if (pathname === '/form') {
+	if (pathname === '/form' || pathname.startsWith('/form/')) {
 		return 'form';
 	}
 

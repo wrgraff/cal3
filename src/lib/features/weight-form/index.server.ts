@@ -6,3 +6,5 @@ export {
 	deleteBodyMeasurement,
 	createGoalRevision
 } from './weight-form.server';
+
+export { isIsoDate, todayIso } from './weight-form.utils';

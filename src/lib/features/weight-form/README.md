@@ -2,16 +2,23 @@
 
 ## Purpose
 
-The `weight-form` feature tracks body weight, body measurements, and weight-loss goals for the Form tab. It owns the Form tab business logic, Supabase persistence, derived weight metrics, charts, entry forms, and history tables; it does not own the mobile shell navigation, authentication UI, calorie tracking, activity tracking, exports, reminders, or medical advice.
+The `weight-form` feature tracks body weight, body measurements, and weight-loss goals for the Form tab. It owns the Form tab business logic, Supabase persistence, derived weight metrics, charts, entry screens, goal settings, and history tables; it does not own the mobile shell navigation, authentication UI, calorie tracking, activity tracking, exports, reminders, or medical advice.
 
 ## Public API
 
 Exports from `index.ts`:
 
-- `WeightFormPage: Component<{ data: WeightFormData; action?: WeightFormActionData | null }>`
-  - Renders the `/form` dashboard, chart, weight entry form, measurement form, goal form, and history tables.
+- `WeightFormPage: Component<{ data: WeightFormData }>`
+  - Renders the `/form` dashboard, progress chart, measurement summary, and primary links.
   - `data`: entries, measurements, and goals loaded by the route server load.
-  - `action`: optional SvelteKit action state for validation messages and success feedback.
+- `WeightEntryPage: Component<{ data: WeightFormData; initialDate?: string; action?: WeightFormActionData | null }>`
+  - Renders the `/form/weight` add/edit weight screen.
+- `BodyMeasurementPage: Component<{ data: WeightFormData; initialDate?: string; action?: WeightFormActionData | null }>`
+  - Renders the `/form/measurements` add/edit body measurements screen.
+- `GoalRevisionPage: Component<{ data: WeightFormData; action?: WeightFormActionData | null }>`
+  - Renders the `/form/goal` goal revision screen.
+- `WeightHistoryPage: Component<{ data: WeightFormData }>`
+  - Renders the `/form/history` weight, measurement, and goal history tables.
 - Pure helpers:
   - `deriveWeightDashboard(input): WeightDashboard`
   - `buildDailyWeightMetrics(input): DailyWeightMetric[]`
@@ -37,6 +44,8 @@ Exports from `index.server.ts`:
 - `upsertBodyMeasurement(context, formData): Promise<ActionResultLike>`
 - `deleteBodyMeasurement(context, formData): Promise<ActionResultLike>`
 - `createGoalRevision(context, formData): Promise<ActionResultLike>`
+- `isIsoDate(value): boolean`
+- `todayIso(date?): string`
 
 ## Dependencies
 
@@ -60,16 +69,16 @@ Exports from `index.server.ts`:
 ## State
 
 - Persistent state lives in Supabase and survives navigation.
-- Route load data is passed into `WeightFormPage` by `/form/+page.svelte`.
+- Route load data is shared by `/form/+layout.server.ts` and passed into each Form child page.
 - Component-local runes state owns only selected dates and chart range.
 - SvelteKit action data owns validation and success feedback after submissions.
 
 ## A11y notes
 
-- `/form` is protected by `requireUser()`; anonymous users are redirected to login.
+- `/form` and its child pages are protected by `requireUser()`; anonymous users are redirected to login.
 - Forms use native `<form>` submissions, explicit labels, visible validation messages, and `role="alert"` for form-level errors.
 - Chart SVGs are decorative to assistive tech and wrapped in containers with concise `role="img"` labels.
-- History rows use semantic tables; selecting a date is done with real `<button>` controls.
+- History rows use semantic tables; entry dates are real links to the relevant edit screen.
 - Icon-only date navigation buttons have `aria-label` values.
 
 ## Out of scope

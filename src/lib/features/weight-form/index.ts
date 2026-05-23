@@ -1,4 +1,8 @@
+export { default as BodyMeasurementPage } from './BodyMeasurementPage.svelte';
+export { default as GoalRevisionPage } from './GoalRevisionPage.svelte';
+export { default as WeightEntryPage } from './WeightEntryPage.svelte';
 export { default as WeightFormPage } from './WeightFormPage.svelte';
+export { default as WeightHistoryPage } from './WeightHistoryPage.svelte';
 
 export {
 	DEFAULT_WEEKLY_LOSS_KG,
@@ -12,6 +16,7 @@ export {
 	deriveWeightDashboard,
 	formatNumber,
 	getForecastEndpoint,
+	isIsoDate,
 	plannedWeight,
 	prettyDate,
 	todayIso
