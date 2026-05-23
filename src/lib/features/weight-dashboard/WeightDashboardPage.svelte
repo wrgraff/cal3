@@ -124,7 +124,7 @@
 					role="group"
 					aria-label="Chart range"
 				>
-					{#each ['7d', '30d', 'goal', '1y'] as rangeOption}
+					{#each ['7d', '2w', '30d', 'goal'] as rangeOption}
 						<button
 							type="button"
 							aria-pressed={chartRange === rangeOption}

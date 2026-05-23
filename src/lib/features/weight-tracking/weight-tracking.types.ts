@@ -12,7 +12,7 @@ export type WeightTag = (typeof WEIGHT_TAGS)[number];
 export type WeightGoalStatus = 'active' | 'archived' | 'reached';
 export type ProgressStatus = 'ahead' | 'on_track' | 'behind' | 'not_enough_data' | 'reached';
 export type SmoothingMethod = 'average' | 'median';
-export type ChartRange = '7d' | '30d' | 'goal' | '1y';
+export type ChartRange = '7d' | '2w' | '30d' | 'goal';
 
 export interface WeightEntry {
 	id: string;

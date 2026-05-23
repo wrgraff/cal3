@@ -27,12 +27,12 @@
 	const visibleMetrics = $derived(
 		metrics.filter((metric) => metric.date >= rangeDates.from && metric.date <= rangeDates.to)
 	);
-	const yDomain = $derived(getYDomain(visibleMetrics, goal));
+	const yDomain = $derived(getYDomain(visibleMetrics, goal, range));
 	const forecast = $derived(getForecastEndpoint({ metrics, goal, currentDate }));
 	const morningPath = $derived(
 		linePath(
 			visibleMetrics
-				.filter((metric) => metric.morningWeightKg != null)
+				.filter((metric) => metric.morningWeightKg != null && metric.date <= currentDate)
 				.map((metric) =>
 					pointFor(metric.date, metric.morningWeightKg as number, rangeDates, yDomain)
 				)
@@ -41,7 +41,7 @@
 	const eveningPath = $derived(
 		linePath(
 			visibleMetrics
-				.filter((metric) => metric.eveningWeightKg != null)
+				.filter((metric) => metric.eveningWeightKg != null && metric.date <= currentDate)
 				.map((metric) =>
 					pointFor(metric.date, metric.eveningWeightKg as number, rangeDates, yDomain)
 				)
@@ -50,7 +50,7 @@
 	const smoothPath = $derived(
 		linePath(
 			visibleMetrics
-				.filter((metric) => metric.smoothedAverageKg != null)
+				.filter((metric) => metric.smoothedAverageKg != null && metric.date <= currentDate)
 				.map((metric) =>
 					pointFor(metric.date, metric.smoothedAverageKg as number, rangeDates, yDomain)
 				)
@@ -63,25 +63,29 @@
 
 	function getRangeDates(selectedRange: ChartRange, activeGoal: WeightGoal | null, today: string) {
 		if (selectedRange === '7d') return { from: addDays(today, -6), to: today };
+		if (selectedRange === '2w') return { from: addDays(today, -13), to: today };
 		if (selectedRange === '30d') return { from: addDays(today, -29), to: today };
-		if (selectedRange === '1y') return { from: addDays(today, -364), to: today };
 		return {
 			from: activeGoal?.startDate ?? addDays(today, -29),
 			to: activeGoal?.calculatedTargetDate ?? today
 		};
 	}
 
-	function getYDomain(rows: DailyWeightMetric[], activeGoal: WeightGoal | null) {
+	function getYDomain(
+		rows: DailyWeightMetric[],
+		activeGoal: WeightGoal | null,
+		selectedRange: ChartRange
+	) {
 		const values = rows
+			.filter((metric) => metric.date <= currentDate)
 			.flatMap((metric) => [
 				metric.morningWeightKg,
 				metric.eveningWeightKg,
-				metric.smoothedAverageKg,
-				metric.plannedWeightKg
+				metric.smoothedAverageKg
 			])
 			.filter((value): value is number => value != null);
 
-		if (activeGoal) {
+		if (selectedRange === 'goal' && activeGoal) {
 			values.push(activeGoal.startWeightKg, activeGoal.targetWeightKg);
 		}
 
