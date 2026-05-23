@@ -56,17 +56,13 @@
 
 	<p class="text-muted-foreground text-xs">
 		Local dev: email links are available in
-		<a class="text-primary underline-offset-4 hover:underline" href="http://127.0.0.1:54324"
-			>Mailpit</a
-		>.
+		<a class="text-primary underline underline-offset-4" href="http://127.0.0.1:54324">Mailpit</a>.
 	</p>
 
 	{#snippet footer()}
 		<p class="text-muted-foreground">
 			No account yet?
-			<a class="text-primary underline-offset-4 hover:underline" href={`/signup${nextQuery}`}
-				>Sign up</a
-			>
+			<a class="text-primary underline underline-offset-4" href={`/signup${nextQuery}`}>Sign up</a>
 		</p>
 	{/snippet}
 </AuthCard>

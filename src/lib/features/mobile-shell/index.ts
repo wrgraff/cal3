@@ -1,6 +1,5 @@
 export { default as MobileShell } from './MobileShell.svelte';
 export { default as IntakeTab } from './IntakeTab.svelte';
-export { default as FormTab } from './FormTab.svelte';
 export { default as ActivityTab } from './ActivityTab.svelte';
 export { default as SettingsTab } from './SettingsTab.svelte';
 

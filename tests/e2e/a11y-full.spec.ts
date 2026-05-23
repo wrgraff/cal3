@@ -15,13 +15,11 @@ test('mobile shell routes have no detectable a11y issues @a11y @a11y-full', asyn
 		.getByRole('navigation', { name: 'Primary' })
 		.getByRole('link', { name: 'Form' })
 		.click();
-	await expect(page.getByRole('heading', { name: 'Body form tracker' })).toBeVisible();
+	await expect(page).toHaveURL(/\/login\?next=%2Fform$/);
+	await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible();
 	await expectNoA11yViolations(page);
 
-	await page
-		.getByRole('navigation', { name: 'Primary' })
-		.getByRole('link', { name: 'Settings' })
-		.click();
+	await page.goto('/settings');
 	await expect(page.getByRole('heading', { name: 'Settings', level: 2 })).toBeVisible();
 	await expectNoA11yViolations(page);
 });

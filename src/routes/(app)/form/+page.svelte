@@ -1,5 +1,13 @@
 <script lang="ts">
-	import { FormTab } from '$lib/features/mobile-shell';
+	import { WeightFormPage } from '$lib/features/weight-form';
+	import type { ActionData, PageData } from './$types';
+
+	interface Props {
+		data: PageData;
+		form?: ActionData;
+	}
+
+	let { data, form }: Props = $props();
 </script>
 
 <svelte:head>
@@ -7,4 +15,4 @@
 	<meta name="description" content="Weight and body measurements tracker." />
 </svelte:head>
 
-<FormTab />
+<WeightFormPage data={data.weightForm} action={form} />

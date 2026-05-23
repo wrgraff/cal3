@@ -34,42 +34,183 @@ export type Database = {
   }
   public: {
     Tables: {
-      notes: {
+      body_measurements: {
         Row: {
-          body: string
+          chest_cm: number | null
           created_at: string
+          date: string
+          hips_cm: number | null
           id: string
-          title: string
+          updated_at: string
+          user_id: string
+          waist_cm: number | null
+        }
+        Insert: {
+          chest_cm?: number | null
+          created_at?: string
+          date: string
+          hips_cm?: number | null
+          id?: string
+          updated_at?: string
+          user_id: string
+          waist_cm?: number | null
+        }
+        Update: {
+          chest_cm?: number | null
+          created_at?: string
+          date?: string
+          hips_cm?: number | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+          waist_cm?: number | null
+        }
+        Relationships: []
+      }
+      weight_entries: {
+        Row: {
+          created_at: string
+          date: string
+          evening_weight_kg: number | null
+          id: string
+          morning_weight_kg: number | null
           updated_at: string
           user_id: string
         }
         Insert: {
-          body?: string
           created_at?: string
+          date: string
+          evening_weight_kg?: number | null
           id?: string
-          title: string
+          morning_weight_kg?: number | null
           updated_at?: string
           user_id: string
         }
         Update: {
-          body?: string
           created_at?: string
+          date?: string
+          evening_weight_kg?: number | null
           id?: string
-          title?: string
+          morning_weight_kg?: number | null
           updated_at?: string
           user_id?: string
         }
         Relationships: []
+      }
+      weight_entry_tags: {
+        Row: {
+          created_at: string
+          id: string
+          tag: Database["public"]["Enums"]["weight_entry_tag"]
+          user_id: string
+          weight_entry_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          tag: Database["public"]["Enums"]["weight_entry_tag"]
+          user_id: string
+          weight_entry_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          tag?: Database["public"]["Enums"]["weight_entry_tag"]
+          user_id?: string
+          weight_entry_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weight_entry_tags_weight_entry_id_fkey"
+            columns: ["weight_entry_id"]
+            isOneToOne: false
+            referencedRelation: "weight_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      weight_goals: {
+        Row: {
+          calculated_target_date: string
+          created_at: string
+          id: string
+          revision_of_goal_id: string | null
+          start_date: string
+          start_weight_kg: number
+          status: Database["public"]["Enums"]["weight_goal_status"]
+          target_weight_kg: number
+          updated_at: string
+          user_id: string
+          weekly_loss_kg: number
+        }
+        Insert: {
+          calculated_target_date: string
+          created_at?: string
+          id?: string
+          revision_of_goal_id?: string | null
+          start_date: string
+          start_weight_kg: number
+          status?: Database["public"]["Enums"]["weight_goal_status"]
+          target_weight_kg: number
+          updated_at?: string
+          user_id: string
+          weekly_loss_kg?: number
+        }
+        Update: {
+          calculated_target_date?: string
+          created_at?: string
+          id?: string
+          revision_of_goal_id?: string | null
+          start_date?: string
+          start_weight_kg?: number
+          status?: Database["public"]["Enums"]["weight_goal_status"]
+          target_weight_kg?: number
+          updated_at?: string
+          user_id?: string
+          weekly_loss_kg?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weight_goals_revision_of_goal_id_fkey"
+            columns: ["revision_of_goal_id"]
+            isOneToOne: false
+            referencedRelation: "weight_goals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_weight_goal_revision: {
+        Args: {
+          p_start_date: string
+          p_start_weight_kg: number
+          p_target_weight_kg: number
+        }
+        Returns: string
+      }
+      upsert_weight_entry_with_tags: {
+        Args: {
+          p_date: string
+          p_evening_weight_kg?: number
+          p_morning_weight_kg?: number
+          p_tags?: Database["public"]["Enums"]["weight_entry_tag"][]
+        }
+        Returns: string
+      }
     }
     Enums: {
-      [_ in never]: never
+      weight_entry_tag:
+        | "late_dinner"
+        | "alcohol"
+        | "training"
+        | "illness"
+        | "travel"
+        | "other"
+      weight_goal_status: "active" | "archived" | "reached"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -199,7 +340,17 @@ export const Constants = {
     Enums: {},
   },
   public: {
-    Enums: {},
+    Enums: {
+      weight_entry_tag: [
+        "late_dinner",
+        "alcohol",
+        "training",
+        "illness",
+        "travel",
+        "other",
+      ],
+      weight_goal_status: ["active", "archived", "reached"],
+    },
   },
 } as const
 

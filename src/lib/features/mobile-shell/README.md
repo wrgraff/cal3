@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Provides the mobile-first app frame for the main product area: fixed max width, top title bar, and bottom tab navigation for `Intake`, `Form`, `Activity`, and `Settings`. It defines navigation shell structure only and does not implement tracker business logic yet.
+Provides the mobile-first app frame for the main product area: fixed max width, top title bar, and bottom tab navigation for `Intake`, `Form`, `Activity`, and `Settings`. It defines navigation shell structure only and does not implement tracker business logic.
 
 ## Public API
 
@@ -11,8 +11,6 @@ Provides the mobile-first app frame for the main product area: fixed max width, 
   - `children`: current route content snippet.
 - `IntakeTab` — `Component`
   - Placeholder content for the intake tracker screen.
-- `FormTab` — `Component`
-  - Placeholder content for the body form tracker screen.
 - `ActivityTab` — `Component`
   - Placeholder content for the activity tracker screen.
 - `SettingsTab` — `Component`

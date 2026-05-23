@@ -56,17 +56,13 @@
 
 	<p class="text-muted-foreground text-xs">
 		Local dev: confirmation and magic-link emails are available in
-		<a class="text-primary underline-offset-4 hover:underline" href="http://127.0.0.1:54324"
-			>Mailpit</a
-		>.
+		<a class="text-primary underline underline-offset-4" href="http://127.0.0.1:54324">Mailpit</a>.
 	</p>
 
 	{#snippet footer()}
 		<p class="text-muted-foreground">
 			Already have an account?
-			<a class="text-primary underline-offset-4 hover:underline" href={`/login${nextQuery}`}
-				>Log in</a
-			>
+			<a class="text-primary underline underline-offset-4" href={`/login${nextQuery}`}>Log in</a>
 		</p>
 	{/snippet}
 </AuthCard>
