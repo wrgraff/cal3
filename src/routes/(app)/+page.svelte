@@ -1,0 +1,10 @@
+<script lang="ts">
+	import { IntakeTab } from '$lib/features/mobile-shell';
+</script>
+
+<svelte:head>
+	<title>Intake | cal3</title>
+	<meta name="description" content="Calorie intake tracker." />
+</svelte:head>
+
+<IntakeTab />

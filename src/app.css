@@ -57,6 +57,7 @@
 	--font-sans: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 	--font-mono:
 		'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+	--mobile-shell-max-width: 460px;
 
 	/* Radii */
 	--radius-sm: 0.25rem;

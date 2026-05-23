@@ -29,12 +29,12 @@ describe('requireUser', () => {
 		let thrown: unknown;
 
 		try {
-			requireUser({ user: null }, { next: '/notes' });
+			requireUser({ user: null }, { next: '/form' });
 		} catch (error) {
 			thrown = error;
 		}
 
-		expect(thrown).toMatchObject({ status: 303, location: '/login?next=%2Fnotes' });
+		expect(thrown).toMatchObject({ status: 303, location: '/login?next=%2Fform' });
 	});
 });
 

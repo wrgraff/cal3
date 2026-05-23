@@ -25,6 +25,15 @@ interface AuthContext {
 	supabase: App.Locals['supabase'];
 }
 
+function isRedirectUrlError(message: string | undefined): boolean {
+	if (!message) {
+		return false;
+	}
+
+	const normalized = message.toLowerCase();
+	return normalized.includes('redirect') && normalized.includes('url');
+}
+
 function getString(formData: FormData, key: string): string {
 	const value = formData.get(key);
 	return typeof value === 'string' ? value : '';
@@ -178,13 +187,23 @@ export async function signupWithPassword(
 		};
 	}
 
-	const { error } = await context.supabase.auth.signUp({
+	let { error } = await context.supabase.auth.signUp({
 		email: values.email,
 		password: values.password,
 		options: {
 			emailRedirectTo: callbackUrl(options)
 		}
 	});
+
+	// Local/dev safety: if current origin is not in Supabase redirect allow-list,
+	// retry without custom redirect so signup can still proceed.
+	if (error && isRedirectUrlError(error.message)) {
+		const retry = await context.supabase.auth.signUp({
+			email: values.email,
+			password: values.password
+		});
+		error = retry.error;
+	}
 
 	if (error) {
 		return {
@@ -194,7 +213,9 @@ export async function signupWithPassword(
 				signup: {
 					values,
 					fieldErrors: {},
-					formError: 'Could not create account. Please try again.'
+					formError: import.meta.env.DEV
+						? `Could not create account: ${error.message}`
+						: 'Could not create account. Please try again.'
 				}
 			}
 		};
@@ -227,12 +248,19 @@ export async function requestMagicLink(
 		};
 	}
 
-	const { error } = await context.supabase.auth.signInWithOtp({
+	let { error } = await context.supabase.auth.signInWithOtp({
 		email: values.email,
 		options: {
 			emailRedirectTo: callbackUrl(options)
 		}
 	});
+
+	if (error && isRedirectUrlError(error.message)) {
+		const retry = await context.supabase.auth.signInWithOtp({
+			email: values.email
+		});
+		error = retry.error;
+	}
 
 	if (error) {
 		return {
@@ -242,7 +270,9 @@ export async function requestMagicLink(
 				magicLink: {
 					values,
 					fieldErrors: {},
-					formError: 'Could not send magic link. Please try again.'
+					formError: import.meta.env.DEV
+						? `Could not send magic link: ${error.message}`
+						: 'Could not send magic link. Please try again.'
 				}
 			}
 		};
