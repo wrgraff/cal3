@@ -1,7 +1,7 @@
 {
-	"name": "design-starter",
+	"name": "cal3",
 	"version": "0.1.0",
-	"description": "SvelteKit + Supabase + PWA template, designed for AI-agent-driven development with feature isolation and a token-driven design system.",
+	"description": "Calories, weight and activity tracker",
 	"private": true,
 	"type": "module",
 	"packageManager": "pnpm@9.15.0",
@@ -34,7 +34,6 @@
 		"db:diff": "supabase db diff",
 		"db:seed": "supabase db reset",
 		"tokens:check-contrast": "node scripts/check-contrast.mjs",
-		"init-project": "node scripts/init-project.mjs",
 		"hooks:install": "lefthook install",
 		"prepare": "svelte-kit sync && lefthook install || true"
 	},
@@ -67,6 +66,7 @@
 		"prettier": "^3.4.2",
 		"prettier-plugin-svelte": "^3.3.2",
 		"prettier-plugin-tailwindcss": "^0.8.0",
+		"supabase": "^2.101.0",
 		"svelte": "^5.55.0",
 		"svelte-check": "^4.1.1",
 		"tailwindcss": "^4.1.0",

@@ -11,7 +11,7 @@
 </script>
 
 <svelte:head>
-	<title>Notes | design-starter</title>
+	<title>Notes | cal3</title>
 	<meta name="description" content="Notes feature demo with Supabase CRUD and RLS." />
 </svelte:head>
 

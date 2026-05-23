@@ -1,8 +1,8 @@
-# {{PROJECT_NAME}}
+# cal3
 
-> {{PROJECT_DESCRIPTION}}
+> Calories, weight and activity tracker
 
-Built from **design-starter** — a SvelteKit + Supabase template designed for **AI-agent-driven development** with strict feature isolation, a token-driven design system, and a workflow for porting prototypes from Claude Design / Figma Make / Lovable.
+Built from **cal3** — a SvelteKit + Supabase template designed for **AI-agent-driven development** with strict feature isolation, a token-driven design system, and a workflow for porting prototypes from Claude Design / Figma Make / Lovable.
 
 ## Rules
 
@@ -33,7 +33,14 @@ UI primitive contracts in:
 
 ## Quick Start
 
-Prerequisites: Node.js 20+, pnpm 9+, Docker (for local Supabase), Supabase CLI.
+Prerequisites: Node.js 20+, pnpm 9+, Docker (for local Supabase).
+
+The Supabase CLI is expected from project dev dependencies after `pnpm install`.
+If you see `supabase: not found`, install it with:
+
+```bash
+pnpm add -D supabase
+```
 
 ```bash
 pnpm install

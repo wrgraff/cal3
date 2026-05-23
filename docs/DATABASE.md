@@ -16,8 +16,11 @@ Migrations are the bridge: they live in `supabase/migrations/` as plain SQL file
 ### Local
 
 ```bash
-# Install Supabase CLI (macOS / Linux / Windows — see https://supabase.com/docs/guides/local-development/cli/getting-started)
-brew install supabase/tap/supabase
+# Install dependencies (Supabase CLI is included as a dev dependency in this repo)
+pnpm install
+
+# If you see `supabase: not found`, install the CLI locally:
+pnpm add -D supabase
 
 # Start Docker Desktop, then:
 pnpm db:start
