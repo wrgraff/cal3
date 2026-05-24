@@ -29,13 +29,9 @@ const supabase: Handle = async ({ event, resolve }) => {
 	 * contents, and the promise is memoized per request for nested loaders.
 	 */
 	event.locals.safeGetUser = () => {
-		userPromise ??= event.locals.supabase.auth.getUser().then(({ data: { user }, error }) => {
-			if (error) {
-				// JWT validation failed or no session exists — treat as anonymous.
-				return null;
-			}
-
-			return assignAdminRole(user, adminEmails);
+		userPromise ??= event.locals.supabase.auth.getSession().then(({ data: { session } }) => {
+			if (!session) return null;
+			return assignAdminRole(session.user, adminEmails);
 		});
 
 		return userPromise;
