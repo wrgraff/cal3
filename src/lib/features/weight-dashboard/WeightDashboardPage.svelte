@@ -21,7 +21,7 @@
 
 	let { data, notice = null }: Props = $props();
 
-	let chartRange = $state<ChartRange>('goal');
+	let chartRange = $state<ChartRange>('2w');
 
 	const dashboard = $derived(deriveWeightDashboard(data));
 	const entryHref = $derived(buildWeightEntryHref(todayIso(), dashboard.summary.currentWeightKg));
