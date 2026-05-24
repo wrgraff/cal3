@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		initialDate: date && isIsoDate(date) ? date : todayIso(),
 		initialWeightKg:
 			Number.isFinite(currentWeightNumber) && currentWeightNumber > 0
-				? currentWeightNumber.toFixed(2)
+				? `${currentWeightNumber}`
 				: ''
 	};
 };

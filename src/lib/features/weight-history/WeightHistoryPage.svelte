@@ -23,11 +23,28 @@
 		const params = new URLSearchParams();
 		if (date) params.set('date', date);
 		if (dashboard.summary.currentWeightKg != null) {
-			params.set('currentWeightKg', dashboard.summary.currentWeightKg.toFixed(2));
+			params.set('currentWeightKg', `${dashboard.summary.currentWeightKg}`);
 		}
 
 		const query = params.toString();
 		return query ? `/shape/weight?${query}` : '/shape/weight';
+	}
+
+	function buildMeasurementEntryHref(date?: string): string {
+		const params = new URLSearchParams();
+		if (date) params.set('date', date);
+		if (dashboard.measurementSummary.latest?.chestCm != null) {
+			params.set('chestCm', `${dashboard.measurementSummary.latest.chestCm}`);
+		}
+		if (dashboard.measurementSummary.latest?.waistCm != null) {
+			params.set('waistCm', `${dashboard.measurementSummary.latest.waistCm}`);
+		}
+		if (dashboard.measurementSummary.latest?.hipsCm != null) {
+			params.set('hipsCm', `${dashboard.measurementSummary.latest.hipsCm}`);
+		}
+
+		const query = params.toString();
+		return query ? `/shape/measurements?${query}` : '/shape/measurements';
 	}
 </script>
 
@@ -88,7 +105,7 @@
 	<Card class="space-y-4 p-4">
 		<div class="flex items-center justify-between gap-3">
 			<h3 class="text-base font-semibold">Body measurements</h3>
-			<LinkButton href="/shape/measurements" variant="outline" size="sm"
+			<LinkButton href={buildMeasurementEntryHref()} variant="outline" size="sm"
 				>Add measurements</LinkButton
 			>
 		</div>
@@ -107,7 +124,7 @@
 						<tr>
 							<td class="py-2 pr-3">
 								<a
-									href={`/shape/measurements?date=${measurement.date}`}
+									href={buildMeasurementEntryHref(measurement.date)}
 									class="text-primary underline-offset-4 hover:underline"
 								>
 									{prettyDate(measurement.date)}

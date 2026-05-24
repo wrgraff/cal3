@@ -25,16 +25,35 @@
 
 	const dashboard = $derived(deriveWeightDashboard(data));
 	const entryHref = $derived(buildWeightEntryHref(todayIso(), dashboard.summary.currentWeightKg));
-	const measurementHref = $derived(`/shape/measurements?date=${todayIso()}`);
+	const measurementHref = $derived(
+		buildMeasurementEntryHref(todayIso(), dashboard.measurementSummary.latest)
+	);
 	const showWeightSavedNotice = $derived(notice === 'weight-saved');
+	const showMeasurementsSavedNotice = $derived(notice === 'measurements-saved');
 
 	function buildWeightEntryHref(date: string, currentWeightKg: number | null): string {
 		const params = new URLSearchParams({ date });
 		if (currentWeightKg != null) {
-			params.set('currentWeightKg', currentWeightKg.toFixed(2));
+			params.set('currentWeightKg', `${currentWeightKg}`);
 		}
 
 		return `/shape/weight?${params.toString()}`;
+	}
+
+	function buildMeasurementEntryHref(
+		date: string,
+		latestMeasurement: {
+			chestCm: number | null;
+			waistCm: number | null;
+			hipsCm: number | null;
+		} | null
+	): string {
+		const params = new URLSearchParams({ date });
+		if (latestMeasurement?.chestCm != null) params.set('chestCm', `${latestMeasurement.chestCm}`);
+		if (latestMeasurement?.waistCm != null) params.set('waistCm', `${latestMeasurement.waistCm}`);
+		if (latestMeasurement?.hipsCm != null) params.set('hipsCm', `${latestMeasurement.hipsCm}`);
+
+		return `/shape/measurements?${params.toString()}`;
 	}
 
 	function statusTone(status: string): string {
@@ -219,6 +238,17 @@
 				role="status"
 			>
 				Weight saved.
+			</p>
+		</div>
+	{/if}
+
+	{#if showMeasurementsSavedNotice}
+		<div class="pointer-events-none fixed inset-x-0 bottom-36 z-30 flex justify-center px-4">
+			<p
+				class="bg-success text-success-foreground rounded-md px-4 py-2 text-sm shadow-lg"
+				role="status"
+			>
+				Measurements saved.
 			</p>
 		</div>
 	{/if}

@@ -70,8 +70,10 @@ export function prettyDate(value: string | null, includeYear = false): string {
 	}).format(parseDate(value));
 }
 
-export function formatNumber(value: number | null | undefined, digits = 1): string {
-	return value == null || Number.isNaN(value) ? '—' : value.toFixed(digits);
+export function formatNumber(value: number | null | undefined, digits?: number): string {
+	if (value == null || Number.isNaN(value)) return '—';
+	if (digits == null) return `${value}`;
+	return value.toFixed(digits);
 }
 
 export function calculateTargetDate(
@@ -272,6 +274,9 @@ function summarizeDashboard(input: {
 	const latestMetric = [...visibleMetrics]
 		.reverse()
 		.find((metric) => metric.smoothedAverageKg != null);
+	const latestMeasured = [...visibleMetrics]
+		.reverse()
+		.find((metric) => metric.morningWeightKg != null || metric.eveningWeightKg != null);
 	const latestMorning = [...visibleMetrics]
 		.reverse()
 		.find((metric) => metric.morningWeightKg != null);
@@ -279,21 +284,28 @@ function summarizeDashboard(input: {
 	const daysSinceStart = activeGoal
 		? Math.max(0, daysBetween(activeGoal.startDate, currentDate))
 		: null;
-	const currentWeightKg = latestMetric?.smoothedAverageKg ?? null;
+	const currentWeightKg = latestMeasured
+		? (latestMeasured.eveningWeightKg ?? latestMeasured.morningWeightKg)
+		: null;
+	const smoothedCurrentWeightKg = latestMetric?.smoothedAverageKg ?? null;
 	const plannedNow = activeGoal ? plannedWeight(activeGoal, currentDate) : null;
 	const deltaVsPlanKg =
-		currentWeightKg != null && plannedNow != null ? currentWeightKg - plannedNow : null;
+		smoothedCurrentWeightKg != null && plannedNow != null
+			? smoothedCurrentWeightKg - plannedNow
+			: null;
 	const targetReached =
-		activeGoal != null && currentWeightKg != null && currentWeightKg <= activeGoal.targetWeightKg;
+		activeGoal != null &&
+		smoothedCurrentWeightKg != null &&
+		smoothedCurrentWeightKg <= activeGoal.targetWeightKg;
 	const status = deriveStatus({
-		smoothed: currentWeightKg,
+		smoothed: smoothedCurrentWeightKg,
 		planned: plannedNow,
 		daysOfData,
 		targetReached
 	});
 	const actualPaceKgPerWeek =
-		activeGoal && currentWeightKg != null && daysSinceStart && daysSinceStart > 0
-			? ((activeGoal.startWeightKg - currentWeightKg) / daysSinceStart) * 7
+		activeGoal && smoothedCurrentWeightKg != null && daysSinceStart && daysSinceStart > 0
+			? ((activeGoal.startWeightKg - smoothedCurrentWeightKg) / daysSinceStart) * 7
 			: null;
 
 	return {

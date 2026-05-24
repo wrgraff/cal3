@@ -11,8 +11,14 @@
 </script>
 
 <svelte:head>
-	<title>Add measurements | cal3</title>
-	<meta name="description" content="Add or update body measurements." />
+	<title>Update measurements | cal3</title>
+	<meta name="description" content="Update body measurements." />
 </svelte:head>
 
-<BodyMeasurementPage data={data.weightTracking} initialDate={data.initialDate} action={form} />
+<BodyMeasurementPage
+	initialDate={data.initialDate}
+	initialChestCm={data.initialChestCm}
+	initialWaistCm={data.initialWaistCm}
+	initialHipsCm={data.initialHipsCm}
+	action={form}
+/>

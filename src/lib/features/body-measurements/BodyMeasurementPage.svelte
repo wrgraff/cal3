@@ -1,46 +1,59 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
-	import { CalendarDays, ChevronLeft, ChevronRight, Ruler } from '@lucide/svelte';
+	import { ArrowLeft, Minus, Plus } from '@lucide/svelte';
 
-	import { Button, Card, Input, Label, LinkButton } from '$lib/components/ui';
+	import { Button, Input, Label, LinkButton } from '$lib/components/ui';
 
-	import type {
-		BodyMeasurement,
-		BodyMeasurementFormValues,
-		WeightTrackingActionData,
-		WeightTrackingData
-	} from '$lib/features/weight-tracking';
-	import { addDays, isIsoDate, prettyDate, todayIso } from '$lib/features/weight-tracking';
+	import type { WeightTrackingActionData } from '$lib/features/weight-tracking';
+	import { isIsoDate, todayIso } from '$lib/features/weight-tracking';
 
 	interface Props {
-		data: WeightTrackingData;
 		initialDate?: string;
+		initialChestCm?: string;
+		initialWaistCm?: string;
+		initialHipsCm?: string;
 		action?: WeightTrackingActionData | null;
 	}
 
-	let { data, initialDate = todayIso(), action = null }: Props = $props();
+	let {
+		initialDate = todayIso(),
+		initialChestCm = '',
+		initialWaistCm = '',
+		initialHipsCm = '',
+		action = null
+	}: Props = $props();
 
 	let selectedMeasurementDate = $state(todayIso());
 	let initialDateApplied = $state(false);
+	let initialValuesApplied = $state(false);
 	let savingMeasurement = $state(false);
-	let deletingMeasurement = $state(false);
-
-	const selectedMeasurement = $derived(
-		data.measurements.find((measurement) => measurement.date === selectedMeasurementDate) ?? null
-	);
-	const measurementValues = $derived(
-		getMeasurementValues(
-			action?.bodyMeasurement?.values,
-			selectedMeasurementDate,
-			selectedMeasurement
-		)
-	);
+	let chestCm = $state('');
+	let waistCm = $state('');
+	let hipsCm = $state('');
 
 	$effect(() => {
 		if (initialDateApplied) return;
 		selectedMeasurementDate = isIsoDate(initialDate) ? initialDate : todayIso();
 		initialDateApplied = true;
+	});
+
+	$effect(() => {
+		const actionValues = action?.bodyMeasurement?.values;
+		if (actionValues) {
+			selectedMeasurementDate = actionValues.date;
+			chestCm = actionValues.chestCm;
+			waistCm = actionValues.waistCm;
+			hipsCm = actionValues.hipsCm;
+			return;
+		}
+
+		if (!initialValuesApplied) {
+			chestCm = initialChestCm;
+			waistCm = initialWaistCm;
+			hipsCm = initialHipsCm;
+			initialValuesApplied = true;
+		}
 	});
 
 	const enhanceMeasurementForm: SubmitFunction = () => {
@@ -54,82 +67,29 @@
 		};
 	};
 
-	const enhanceDeleteForm: SubmitFunction = () => {
-		deletingMeasurement = true;
-		return async ({ update }) => {
-			try {
-				await update({ reset: false });
-			} finally {
-				deletingMeasurement = false;
-			}
-		};
-	};
+	function adjustMeasurement(field: 'chest' | 'waist' | 'hips', step: 0.5 | -0.5): void {
+		const currentRaw = field === 'chest' ? chestCm : field === 'waist' ? waistCm : hipsCm;
+		const parsedValue = Number(currentRaw);
+		const currentValue = Number.isFinite(parsedValue) ? parsedValue : 0;
+		const nextValue = Math.max(0, Math.round((currentValue + step) * 10) / 10);
+		const normalized = `${nextValue}`;
 
-	function getMeasurementValues(
-		actionValues: BodyMeasurementFormValues | undefined,
-		date: string,
-		measurement: BodyMeasurement | null
-	): BodyMeasurementFormValues {
-		if (actionValues) return actionValues;
-		return {
-			date,
-			chestCm: measurement?.chestCm?.toString() ?? '',
-			waistCm: measurement?.waistCm?.toString() ?? '',
-			hipsCm: measurement?.hipsCm?.toString() ?? ''
-		};
+		if (field === 'chest') chestCm = normalized;
+		if (field === 'waist') waistCm = normalized;
+		if (field === 'hips') hipsCm = normalized;
 	}
 </script>
 
 <section class="space-y-5" aria-labelledby="body-measurement-heading">
-	<header class="space-y-3">
-		<LinkButton href="/shape" variant="ghost" size="sm">Back to Shape</LinkButton>
-		<div class="flex items-start justify-between gap-3">
-			<div>
-				<p class="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-					Measurements
-				</p>
-				<h2 id="body-measurement-heading" class="text-2xl font-semibold tracking-tight">
-					Add measurements
-				</h2>
-			</div>
-			<div class="flex items-center gap-1" aria-label="Selected date controls">
-				<Button
-					size="icon"
-					variant="ghost"
-					aria-label="Previous day"
-					onclick={() => (selectedMeasurementDate = addDays(selectedMeasurementDate, -1))}
-				>
-					<ChevronLeft size={18} aria-hidden="true" />
-				</Button>
-				<div
-					class="bg-secondary text-secondary-foreground flex min-h-9 items-center gap-2 rounded-md px-3 text-sm font-medium"
-				>
-					<CalendarDays size={16} aria-hidden="true" />
-					<span>{prettyDate(selectedMeasurementDate, true)}</span>
-				</div>
-				<Button
-					size="icon"
-					variant="ghost"
-					aria-label="Next day"
-					onclick={() => (selectedMeasurementDate = addDays(selectedMeasurementDate, 1))}
-				>
-					<ChevronRight size={18} aria-hidden="true" />
-				</Button>
-			</div>
-		</div>
-
-		{#if action?.message}
-			<p class="bg-success text-success-foreground rounded-md px-3 py-2 text-sm" role="status">
-				{action.message}
-			</p>
-		{/if}
+	<header class="relative flex min-h-9 items-center justify-center">
+		<LinkButton href="/shape" variant="ghost" size="sm" class="absolute left-0">
+			<ArrowLeft size={16} aria-hidden="true" />
+			Back
+		</LinkButton>
+		<p id="body-measurement-heading" class="text-sm font-medium">Update measurements</p>
 	</header>
 
-	<Card class="space-y-4 p-4">
-		<div class="flex items-center gap-2">
-			<Ruler size={18} aria-hidden="true" />
-			<h3 class="text-base font-semibold">Body measurements</h3>
-		</div>
+	<div class="space-y-4">
 		<form
 			method="POST"
 			action="?/upsertBodyMeasurement"
@@ -137,14 +97,14 @@
 			novalidate
 			use:enhance={enhanceMeasurementForm}
 		>
-			<div class="grid gap-3 sm:grid-cols-4">
+			<div class="space-y-1.5">
 				<div class="space-y-1.5">
 					<Label for="measurement-date">Date</Label>
 					<Input
 						id="measurement-date"
 						name="date"
 						type="date"
-						value={measurementValues.date}
+						value={selectedMeasurementDate}
 						invalid={Boolean(action?.bodyMeasurement?.fieldErrors?.date)}
 						aria-describedby={action?.bodyMeasurement?.fieldErrors?.date
 							? 'measurement-date-error'
@@ -157,21 +117,44 @@
 						</p>
 					{/if}
 				</div>
+			</div>
+
+			<div class="grid gap-3 sm:grid-cols-3">
 				<div class="space-y-1.5">
 					<Label for="chest-cm">Chest</Label>
-					<Input
-						id="chest-cm"
-						name="chestCm"
-						type="number"
-						step="0.5"
-						min="0"
-						value={measurementValues.chestCm}
-						placeholder="cm"
-						invalid={Boolean(action?.bodyMeasurement?.fieldErrors?.chestCm)}
-						aria-describedby={action?.bodyMeasurement?.fieldErrors?.chestCm
-							? 'chest-cm-error'
-							: undefined}
-					/>
+					<div class="grid grid-cols-[1fr_auto_auto] gap-2">
+						<Input
+							id="chest-cm"
+							name="chestCm"
+							type="number"
+							step="0.5"
+							min="0"
+							bind:value={chestCm}
+							placeholder="cm"
+							invalid={Boolean(action?.bodyMeasurement?.fieldErrors?.chestCm)}
+							aria-describedby={action?.bodyMeasurement?.fieldErrors?.chestCm
+								? 'chest-cm-error'
+								: undefined}
+						/>
+						<Button
+							type="button"
+							variant="outline"
+							size="icon"
+							aria-label="Decrease chest by 0.5 cm"
+							onclick={() => adjustMeasurement('chest', -0.5)}
+						>
+							<Minus size={16} aria-hidden="true" />
+						</Button>
+						<Button
+							type="button"
+							variant="outline"
+							size="icon"
+							aria-label="Increase chest by 0.5 cm"
+							onclick={() => adjustMeasurement('chest', 0.5)}
+						>
+							<Plus size={16} aria-hidden="true" />
+						</Button>
+					</div>
 					{#if action?.bodyMeasurement?.fieldErrors?.chestCm}
 						<p id="chest-cm-error" class="text-destructive text-xs">
 							{action.bodyMeasurement.fieldErrors.chestCm}
@@ -180,19 +163,39 @@
 				</div>
 				<div class="space-y-1.5">
 					<Label for="waist-cm">Waist</Label>
-					<Input
-						id="waist-cm"
-						name="waistCm"
-						type="number"
-						step="0.5"
-						min="0"
-						value={measurementValues.waistCm}
-						placeholder="cm"
-						invalid={Boolean(action?.bodyMeasurement?.fieldErrors?.waistCm)}
-						aria-describedby={action?.bodyMeasurement?.fieldErrors?.waistCm
-							? 'waist-cm-error'
-							: undefined}
-					/>
+					<div class="grid grid-cols-[1fr_auto_auto] gap-2">
+						<Input
+							id="waist-cm"
+							name="waistCm"
+							type="number"
+							step="0.5"
+							min="0"
+							bind:value={waistCm}
+							placeholder="cm"
+							invalid={Boolean(action?.bodyMeasurement?.fieldErrors?.waistCm)}
+							aria-describedby={action?.bodyMeasurement?.fieldErrors?.waistCm
+								? 'waist-cm-error'
+								: undefined}
+						/>
+						<Button
+							type="button"
+							variant="outline"
+							size="icon"
+							aria-label="Decrease waist by 0.5 cm"
+							onclick={() => adjustMeasurement('waist', -0.5)}
+						>
+							<Minus size={16} aria-hidden="true" />
+						</Button>
+						<Button
+							type="button"
+							variant="outline"
+							size="icon"
+							aria-label="Increase waist by 0.5 cm"
+							onclick={() => adjustMeasurement('waist', 0.5)}
+						>
+							<Plus size={16} aria-hidden="true" />
+						</Button>
+					</div>
 					{#if action?.bodyMeasurement?.fieldErrors?.waistCm}
 						<p id="waist-cm-error" class="text-destructive text-xs">
 							{action.bodyMeasurement.fieldErrors.waistCm}
@@ -201,19 +204,39 @@
 				</div>
 				<div class="space-y-1.5">
 					<Label for="hips-cm">Hips</Label>
-					<Input
-						id="hips-cm"
-						name="hipsCm"
-						type="number"
-						step="0.5"
-						min="0"
-						value={measurementValues.hipsCm}
-						placeholder="cm"
-						invalid={Boolean(action?.bodyMeasurement?.fieldErrors?.hipsCm)}
-						aria-describedby={action?.bodyMeasurement?.fieldErrors?.hipsCm
-							? 'hips-cm-error'
-							: undefined}
-					/>
+					<div class="grid grid-cols-[1fr_auto_auto] gap-2">
+						<Input
+							id="hips-cm"
+							name="hipsCm"
+							type="number"
+							step="0.5"
+							min="0"
+							bind:value={hipsCm}
+							placeholder="cm"
+							invalid={Boolean(action?.bodyMeasurement?.fieldErrors?.hipsCm)}
+							aria-describedby={action?.bodyMeasurement?.fieldErrors?.hipsCm
+								? 'hips-cm-error'
+								: undefined}
+						/>
+						<Button
+							type="button"
+							variant="outline"
+							size="icon"
+							aria-label="Decrease hips by 0.5 cm"
+							onclick={() => adjustMeasurement('hips', -0.5)}
+						>
+							<Minus size={16} aria-hidden="true" />
+						</Button>
+						<Button
+							type="button"
+							variant="outline"
+							size="icon"
+							aria-label="Increase hips by 0.5 cm"
+							onclick={() => adjustMeasurement('hips', 0.5)}
+						>
+							<Plus size={16} aria-hidden="true" />
+						</Button>
+					</div>
 					{#if action?.bodyMeasurement?.fieldErrors?.hipsCm}
 						<p id="hips-cm-error" class="text-destructive text-xs">
 							{action.bodyMeasurement.fieldErrors.hipsCm}
@@ -226,17 +249,11 @@
 					{action.bodyMeasurement.formError}
 				</p>
 			{/if}
-			<div class="flex justify-end">
-				<Button type="submit" loading={savingMeasurement}>Save measurements</Button>
+			<div class="flex justify-center">
+				<Button type="submit" size="lg" class="min-w-44" loading={savingMeasurement}>
+					Update measurements
+				</Button>
 			</div>
 		</form>
-		{#if selectedMeasurement}
-			<form method="POST" action="?/deleteBodyMeasurement" use:enhance={enhanceDeleteForm}>
-				<input type="hidden" name="id" value={selectedMeasurement.id} />
-				<Button type="submit" variant="destructive" size="sm" loading={deletingMeasurement}>
-					Delete selected measurements
-				</Button>
-			</form>
-		{/if}
-	</Card>
+	</div>
 </section>
