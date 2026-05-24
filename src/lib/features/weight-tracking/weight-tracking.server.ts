@@ -226,10 +226,14 @@ export async function loadWeightGoalData(
 }
 
 function parseWeightEntryForm(formData: FormData): WeightEntryFormValues {
+	const timeOfDayRaw = getString(formData, 'timeOfDay');
+	const timeOfDay: WeightEntryFormValues['timeOfDay'] =
+		timeOfDayRaw === 'evening' ? 'evening' : 'morning';
+
 	return {
 		date: getString(formData, 'date'),
-		morningWeightKg: getString(formData, 'morningWeightKg'),
-		eveningWeightKg: getString(formData, 'eveningWeightKg'),
+		weightKg: getString(formData, 'weightKg'),
+		timeOfDay,
 		tags: formData
 			.getAll('tags')
 			.filter(
@@ -259,28 +263,21 @@ function parseGoalForm(formData: FormData): WeightGoalFormValues {
 export async function upsertWeightEntry(context: WeightTrackingServerContext, formData: FormData) {
 	const supabase = typedSupabase(context.supabase);
 	const values = parseWeightEntryForm(formData);
-	const morningWeightKg = coerceNullableNumber(values.morningWeightKg);
-	const eveningWeightKg = coerceNullableNumber(values.eveningWeightKg);
+	const weightKg = coerceNullableNumber(values.weightKg);
 	const fieldErrors: NonNullable<WeightTrackingActionData['weightEntry']>['fieldErrors'] = {};
 
 	if (!isIsoDate(values.date)) fieldErrors.date = 'Choose a valid date.';
-	if (Number.isNaN(morningWeightKg))
-		fieldErrors.morningWeightKg = 'Morning weight must be a number.';
-	if (Number.isNaN(eveningWeightKg))
-		fieldErrors.eveningWeightKg = 'Evening weight must be a number.';
-	if (morningWeightKg != null && !Number.isNaN(morningWeightKg) && morningWeightKg <= 0) {
-		fieldErrors.morningWeightKg = 'Morning weight must be greater than zero.';
-	}
-	if (eveningWeightKg != null && !Number.isNaN(eveningWeightKg) && eveningWeightKg <= 0) {
-		fieldErrors.eveningWeightKg = 'Evening weight must be greater than zero.';
-	}
-	if (morningWeightKg == null && eveningWeightKg == null) {
-		fieldErrors.morningWeightKg = 'Add at least one weight value.';
-	}
+	if (Number.isNaN(weightKg)) fieldErrors.weightKg = 'Weight must be a number.';
+	if (weightKg != null && !Number.isNaN(weightKg) && weightKg <= 0)
+		fieldErrors.weightKg = 'Weight must be greater than zero.';
+	if (weightKg == null) fieldErrors.weightKg = 'Add a weight value.';
 
 	if (Object.keys(fieldErrors).length > 0) {
 		return fail(400, { weightEntry: { values, fieldErrors } });
 	}
+
+	const morningWeightKg = values.timeOfDay === 'morning' ? (weightKg ?? undefined) : undefined;
+	const eveningWeightKg = values.timeOfDay === 'evening' ? (weightKg ?? undefined) : undefined;
 
 	const { error } = await supabase.rpc('upsert_weight_entry_with_tags', {
 		p_date: values.date,

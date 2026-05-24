@@ -1,48 +1,54 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
-	import { CalendarDays, ChevronLeft, ChevronRight, Plus } from '@lucide/svelte';
+	import { ArrowLeft, Minus, Plus } from '@lucide/svelte';
 
-	import { Button, Card, Input, Label, LinkButton } from '$lib/components/ui';
+	import { Button, Input, Label, LinkButton } from '$lib/components/ui';
 
 	import type {
-		WeightEntry,
 		WeightEntryFormValues,
 		WeightTrackingActionData,
-		WeightTrackingData,
 		WeightTag
 	} from '$lib/features/weight-tracking';
 	import { WEIGHT_TAGS } from '$lib/features/weight-tracking';
-	import {
-		TAG_LABELS,
-		addDays,
-		isIsoDate,
-		prettyDate,
-		todayIso
-	} from '$lib/features/weight-tracking';
+	import { TAG_LABELS, isIsoDate, todayIso } from '$lib/features/weight-tracking';
 
 	interface Props {
-		data: WeightTrackingData;
 		initialDate?: string;
+		initialWeightKg?: string;
 		action?: WeightTrackingActionData | null;
 	}
 
-	let { data, initialDate = todayIso(), action = null }: Props = $props();
+	let { initialDate = todayIso(), initialWeightKg = '', action = null }: Props = $props();
 
 	let selectedDate = $state(todayIso());
 	let initialDateApplied = $state(false);
+	let initialWeightApplied = $state(false);
 	let savingWeight = $state(false);
-	let deletingWeight = $state(false);
+	let weightKg = $state('');
+	let timeOfDay = $state<WeightEntryFormValues['timeOfDay']>(defaultTimeOfDay());
 
-	const selectedEntry = $derived(data.entries.find((entry) => entry.date === selectedDate) ?? null);
-	const weightValues = $derived(
-		getWeightValues(action?.weightEntry?.values, selectedDate, selectedEntry)
-	);
+	const selectedTags = $derived(action?.weightEntry?.values?.tags ?? []);
 
 	$effect(() => {
 		if (initialDateApplied) return;
 		selectedDate = isIsoDate(initialDate) ? initialDate : todayIso();
 		initialDateApplied = true;
+	});
+
+	$effect(() => {
+		const actionValues = action?.weightEntry?.values;
+		if (actionValues) {
+			selectedDate = actionValues.date;
+			weightKg = actionValues.weightKg;
+			timeOfDay = actionValues.timeOfDay;
+			return;
+		}
+
+		if (!initialWeightApplied) {
+			weightKg = initialWeightKg;
+			initialWeightApplied = true;
+		}
 	});
 
 	const enhanceWeightForm: SubmitFunction = () => {
@@ -56,78 +62,29 @@
 		};
 	};
 
-	const enhanceDeleteForm: SubmitFunction = () => {
-		deletingWeight = true;
-		return async ({ update }) => {
-			try {
-				await update({ reset: false });
-			} finally {
-				deletingWeight = false;
-			}
-		};
-	};
+	function defaultTimeOfDay(date = new Date()): WeightEntryFormValues['timeOfDay'] {
+		const hours = date.getHours();
+		return hours >= 7 && hours <= 16 ? 'morning' : 'evening';
+	}
 
-	function getWeightValues(
-		actionValues: WeightEntryFormValues | undefined,
-		date: string,
-		entry: WeightEntry | null
-	): WeightEntryFormValues {
-		if (actionValues) return actionValues;
-		return {
-			date,
-			morningWeightKg: entry?.morningWeightKg?.toString() ?? '',
-			eveningWeightKg: entry?.eveningWeightKg?.toString() ?? '',
-			tags: entry?.tags ?? []
-		};
+	function adjustWeight(step: 0.01 | -0.01): void {
+		const parsedValue = Number(weightKg);
+		const currentValue = Number.isFinite(parsedValue) ? parsedValue : 0;
+		const nextValue = Math.max(0, Math.round((currentValue + step) * 100) / 100);
+		weightKg = nextValue.toFixed(2);
 	}
 </script>
 
 <section class="space-y-5" aria-labelledby="weight-entry-heading">
-	<header class="space-y-3">
-		<LinkButton href="/shape" variant="ghost" size="sm">Back to Shape</LinkButton>
-		<div class="flex items-start justify-between gap-3">
-			<div>
-				<p class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Weight</p>
-				<h2 id="weight-entry-heading" class="text-2xl font-semibold tracking-tight">Add weight</h2>
-			</div>
-			<div class="flex items-center gap-1" aria-label="Selected date controls">
-				<Button
-					size="icon"
-					variant="ghost"
-					aria-label="Previous day"
-					onclick={() => (selectedDate = addDays(selectedDate, -1))}
-				>
-					<ChevronLeft size={18} aria-hidden="true" />
-				</Button>
-				<div
-					class="bg-secondary text-secondary-foreground flex min-h-9 items-center gap-2 rounded-md px-3 text-sm font-medium"
-				>
-					<CalendarDays size={16} aria-hidden="true" />
-					<span>{prettyDate(selectedDate, true)}</span>
-				</div>
-				<Button
-					size="icon"
-					variant="ghost"
-					aria-label="Next day"
-					onclick={() => (selectedDate = addDays(selectedDate, 1))}
-				>
-					<ChevronRight size={18} aria-hidden="true" />
-				</Button>
-			</div>
-		</div>
-
-		{#if action?.message}
-			<p class="bg-success text-success-foreground rounded-md px-3 py-2 text-sm" role="status">
-				{action.message}
-			</p>
-		{/if}
+	<header class="relative flex min-h-9 items-center justify-center">
+		<LinkButton href="/shape" variant="ghost" size="sm" class="absolute left-0">
+			<ArrowLeft size={16} aria-hidden="true" />
+			Back
+		</LinkButton>
+		<p id="weight-entry-heading" class="text-sm font-medium">Update weight</p>
 	</header>
 
-	<Card class="space-y-4 p-4">
-		<div class="flex items-center gap-2">
-			<Plus size={18} aria-hidden="true" />
-			<h3 class="text-base font-semibold">Weight entry</h3>
-		</div>
+	<div class="space-y-4">
 		<form
 			method="POST"
 			action="?/upsertWeightEntry"
@@ -135,14 +92,14 @@
 			novalidate
 			use:enhance={enhanceWeightForm}
 		>
-			<div class="grid gap-3 sm:grid-cols-3">
+			<div class="grid grid-cols-2 items-end gap-3">
 				<div class="space-y-1.5">
 					<Label for="weight-date">Date</Label>
 					<Input
 						id="weight-date"
 						name="date"
 						type="date"
-						value={weightValues.date}
+						value={selectedDate}
 						invalid={Boolean(action?.weightEntry?.fieldErrors?.date)}
 						aria-describedby={action?.weightEntry?.fieldErrors?.date
 							? 'weight-date-error'
@@ -156,47 +113,85 @@
 					{/if}
 				</div>
 				<div class="space-y-1.5">
-					<Label for="morning-weight">Morning weight</Label>
+					<p class="text-sm font-medium">Time of day</p>
+					<div
+						class="bg-secondary inline-flex rounded-md p-1"
+						role="radiogroup"
+						aria-label="Time of day"
+					>
+						<label>
+							<input
+								class="peer sr-only"
+								type="radio"
+								name="timeOfDay"
+								value="morning"
+								bind:group={timeOfDay}
+							/>
+							<span
+								class="peer-checked:bg-background peer-checked:text-foreground text-muted-foreground inline-flex cursor-pointer rounded-sm px-3 py-1.5 text-sm font-medium shadow-sm"
+							>
+								Morning
+							</span>
+						</label>
+						<label>
+							<input
+								class="peer sr-only"
+								type="radio"
+								name="timeOfDay"
+								value="evening"
+								bind:group={timeOfDay}
+							/>
+							<span
+								class="peer-checked:bg-background peer-checked:text-foreground text-muted-foreground inline-flex cursor-pointer rounded-sm px-3 py-1.5 text-sm font-medium shadow-sm"
+							>
+								Evening
+							</span>
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="space-y-1.5">
+				<Label for="weight-value" class="block text-center">Weight</Label>
+				<div class="flex items-center gap-2">
+					<Button
+						type="button"
+						variant="outline"
+						size="lg"
+						aria-label="Decrease by 0.01 kg"
+						onclick={() => adjustWeight(-0.01)}
+					>
+						<Minus size={18} aria-hidden="true" />
+					</Button>
 					<Input
-						id="morning-weight"
-						name="morningWeightKg"
+						id="weight-value"
+						name="weightKg"
 						type="number"
-						step="0.05"
+						step="0.01"
 						min="0"
-						value={weightValues.morningWeightKg}
 						placeholder="kg"
-						invalid={Boolean(action?.weightEntry?.fieldErrors?.morningWeightKg)}
-						aria-describedby={action?.weightEntry?.fieldErrors?.morningWeightKg
-							? 'morning-weight-error'
+						class="h-16 flex-1 text-center text-4xl font-semibold"
+						bind:value={weightKg}
+						invalid={Boolean(action?.weightEntry?.fieldErrors?.weightKg)}
+						aria-describedby={action?.weightEntry?.fieldErrors?.weightKg
+							? 'weight-value-error'
 							: undefined}
 					/>
-					{#if action?.weightEntry?.fieldErrors?.morningWeightKg}
-						<p id="morning-weight-error" class="text-destructive text-xs">
-							{action.weightEntry.fieldErrors.morningWeightKg}
-						</p>
-					{/if}
+					<Button
+						type="button"
+						variant="outline"
+						size="lg"
+						aria-label="Increase by 0.01 kg"
+						onclick={() => adjustWeight(0.01)}
+					>
+						<Plus size={18} aria-hidden="true" />
+					</Button>
 				</div>
-				<div class="space-y-1.5">
-					<Label for="evening-weight">Evening weight</Label>
-					<Input
-						id="evening-weight"
-						name="eveningWeightKg"
-						type="number"
-						step="0.05"
-						min="0"
-						value={weightValues.eveningWeightKg}
-						placeholder="kg"
-						invalid={Boolean(action?.weightEntry?.fieldErrors?.eveningWeightKg)}
-						aria-describedby={action?.weightEntry?.fieldErrors?.eveningWeightKg
-							? 'evening-weight-error'
-							: undefined}
-					/>
-					{#if action?.weightEntry?.fieldErrors?.eveningWeightKg}
-						<p id="evening-weight-error" class="text-destructive text-xs">
-							{action.weightEntry.fieldErrors.eveningWeightKg}
-						</p>
-					{/if}
-				</div>
+				{#if action?.weightEntry?.fieldErrors?.weightKg}
+					<p id="weight-value-error" class="text-destructive text-xs">
+						{action.weightEntry.fieldErrors.weightKg}
+					</p>
+				{/if}
 			</div>
 
 			<fieldset class="space-y-2">
@@ -209,7 +204,7 @@
 								type="checkbox"
 								name="tags"
 								value={tag}
-								checked={weightValues.tags.includes(tag as WeightTag)}
+								checked={selectedTags.includes(tag as WeightTag)}
 							/>
 							<span
 								class="border-input peer-checked:bg-primary peer-checked:text-primary-foreground peer-focus-visible:ring-ring inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-medium peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:outline-none"
@@ -227,26 +222,11 @@
 				</p>
 			{/if}
 
-			<div class="flex flex-wrap items-center justify-between gap-2">
-				{#if selectedEntry}
-					<p class="text-muted-foreground text-xs">
-						Editing existing entry for {prettyDate(selectedEntry.date, true)}.
-					</p>
-				{:else}
-					<p class="text-muted-foreground text-xs">
-						At least one weight value is required; evening weight is secondary.
-					</p>
-				{/if}
-				<Button type="submit" loading={savingWeight}>Save weight</Button>
+			<div class="flex justify-center">
+				<Button type="submit" size="lg" class="min-w-44" loading={savingWeight}>
+					Update weight
+				</Button>
 			</div>
 		</form>
-		{#if selectedEntry}
-			<form method="POST" action="?/deleteWeightEntry" use:enhance={enhanceDeleteForm}>
-				<input type="hidden" name="id" value={selectedEntry.id} />
-				<Button type="submit" variant="destructive" size="sm" loading={deletingWeight}>
-					Delete selected weight entry
-				</Button>
-			</form>
-		{/if}
-	</Card>
+	</div>
 </section>

@@ -108,8 +108,8 @@ export interface WeightTrackingData {
 
 export interface WeightEntryFormValues {
 	date: string;
-	morningWeightKg: string;
-	eveningWeightKg: string;
+	weightKg: string;
+	timeOfDay: 'morning' | 'evening';
 	tags: WeightTag[];
 }
 
@@ -128,8 +128,8 @@ export interface WeightGoalFormValues {
 
 export interface WeightTrackingFieldErrors {
 	date?: string;
-	morningWeightKg?: string;
-	eveningWeightKg?: string;
+	weightKg?: string;
+	timeOfDay?: string;
 	tags?: string;
 	chestCm?: string;
 	waistCm?: string;

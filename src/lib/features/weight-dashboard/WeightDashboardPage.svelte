@@ -16,15 +16,26 @@
 
 	interface Props {
 		data: WeightTrackingData;
+		notice?: string | null;
 	}
 
-	let { data }: Props = $props();
+	let { data, notice = null }: Props = $props();
 
 	let chartRange = $state<ChartRange>('goal');
 
 	const dashboard = $derived(deriveWeightDashboard(data));
-	const entryHref = $derived(`/shape/weight?date=${todayIso()}`);
+	const entryHref = $derived(buildWeightEntryHref(todayIso(), dashboard.summary.currentWeightKg));
 	const measurementHref = $derived(`/shape/measurements?date=${todayIso()}`);
+	const showWeightSavedNotice = $derived(notice === 'weight-saved');
+
+	function buildWeightEntryHref(date: string, currentWeightKg: number | null): string {
+		const params = new URLSearchParams({ date });
+		if (currentWeightKg != null) {
+			params.set('currentWeightKg', currentWeightKg.toFixed(2));
+		}
+
+		return `/shape/weight?${params.toString()}`;
+	}
 
 	function statusTone(status: string): string {
 		if (status === 'ahead' || status === 'reached') return 'bg-success text-success-foreground';
@@ -200,4 +211,15 @@
 			</LinkButton>
 		</div>
 	</div>
+
+	{#if showWeightSavedNotice}
+		<div class="pointer-events-none fixed inset-x-0 bottom-36 z-30 flex justify-center px-4">
+			<p
+				class="bg-success text-success-foreground rounded-md px-4 py-2 text-sm shadow-lg"
+				role="status"
+			>
+				Weight saved.
+			</p>
+		</div>
+	{/if}
 </section>

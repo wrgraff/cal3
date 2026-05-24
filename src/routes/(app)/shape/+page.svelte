@@ -14,4 +14,4 @@
 	<meta name="description" content="Weight and body measurements tracker." />
 </svelte:head>
 
-<WeightDashboardPage data={data.weightTracking} />
+<WeightDashboardPage data={data.weightTracking} notice={data.notice} />

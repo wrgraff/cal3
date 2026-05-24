@@ -2,15 +2,15 @@
 
 ## Purpose
 
-The `weight-entry` feature renders the `/shape/weight` screen for adding, editing, and deleting daily weight entries. It does not render dashboard charts, body measurement forms, goal settings, or history tables.
+The `weight-entry` feature renders the `/shape/weight` screen for adding a daily weight entry with one weight field, time-of-day selector, and tags. It does not render dashboard charts, body measurement forms, goal settings, or history tables.
 
 ## Public API
 
 Exports from `index.ts`:
 
-- `WeightEntryPage: Component<{ data: WeightTrackingData; initialDate?: string; action?: WeightTrackingActionData | null }>`
-  - `data`: entries loaded by the Shape route layout.
+- `WeightEntryPage: Component<{ initialDate?: string; initialWeightKg?: string; action?: WeightTrackingActionData | null }>`
   - `initialDate`: optional selected date from the route query string.
+  - `initialWeightKg`: optional prefilled current weight passed from navigation context.
   - `action`: optional SvelteKit action data for validation and success messages.
 
 ## Dependencies
@@ -29,12 +29,12 @@ N/A. Writes are submitted to route actions that call `weight-tracking` server AP
 
 ## State
 
-- Component-local `$state` owns the selected date and one-time initial date application.
-- Form values are derived from action data and the selected entry.
+- Component-local `$state` owns selected date, time-of-day, and weight input.
+- Weight default is sourced from `initialWeightKg` when no action values exist.
 
 ## A11y notes
 
-- Date navigation uses icon-only `<button>` elements with `aria-label`.
+- Date navigation and +/- controls use icon-only `<button>` elements with `aria-label`.
 - Inputs have explicit labels and inline validation messages.
 - Form-level errors use `role="alert"`.
 
@@ -43,3 +43,4 @@ N/A. Writes are submitted to route actions that call `weight-tracking` server AP
 - Body measurements.
 - Goal revisions.
 - Bulk edits or imports.
+- Deleting existing weight entries.

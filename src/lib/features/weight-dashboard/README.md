@@ -8,8 +8,9 @@ The `weight-dashboard` feature renders the `/shape` dashboard: current weight su
 
 Exports from `index.ts`:
 
-- `WeightDashboardPage: Component<{ data: WeightTrackingData }>`
+- `WeightDashboardPage: Component<{ data: WeightTrackingData; notice?: string | null }>`
   - `data`: weight entries, body measurements, and goals loaded by the Shape route layout.
+  - `notice`: optional route notice for one-off UI feedback (for example, after save redirects).
 
 ## Dependencies
 

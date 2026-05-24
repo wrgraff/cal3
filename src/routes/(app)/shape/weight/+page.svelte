@@ -15,4 +15,8 @@
 	<meta name="description" content="Add or update a daily weight entry." />
 </svelte:head>
 
-<WeightEntryPage data={data.weightTracking} initialDate={data.initialDate} action={form} />
+<WeightEntryPage
+	initialDate={data.initialDate}
+	initialWeightKg={data.initialWeightKg}
+	action={form}
+/>

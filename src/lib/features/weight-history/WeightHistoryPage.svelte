@@ -18,6 +18,17 @@
 	let { data }: Props = $props();
 
 	const dashboard = $derived(deriveWeightDashboard(data));
+
+	function buildWeightEntryHref(date?: string): string {
+		const params = new URLSearchParams();
+		if (date) params.set('date', date);
+		if (dashboard.summary.currentWeightKg != null) {
+			params.set('currentWeightKg', dashboard.summary.currentWeightKg.toFixed(2));
+		}
+
+		const query = params.toString();
+		return query ? `/shape/weight?${query}` : '/shape/weight';
+	}
 </script>
 
 <section class="space-y-5" aria-labelledby="history-heading">
@@ -35,7 +46,7 @@
 	<Card class="space-y-4 p-4">
 		<div class="flex items-center justify-between gap-3">
 			<h3 class="text-base font-semibold">Weight entries</h3>
-			<LinkButton href="/shape/weight" variant="outline" size="sm">Add weight</LinkButton>
+			<LinkButton href={buildWeightEntryHref()} variant="outline" size="sm">Add weight</LinkButton>
 		</div>
 		<div class="overflow-x-auto">
 			<table class="w-full text-left text-sm">
@@ -52,7 +63,7 @@
 						<tr>
 							<td class="py-2 pr-3">
 								<a
-									href={`/shape/weight?date=${entry.date}`}
+									href={buildWeightEntryHref(entry.date)}
 									class="text-primary underline-offset-4 hover:underline"
 								>
 									{prettyDate(entry.date)}
