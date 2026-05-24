@@ -28,6 +28,9 @@ Exports from `index.ts`:
 Exports from `index.server.ts`:
 
 - `loadWeightTrackingData(context): Promise<WeightTrackingData>`
+- `loadWeightEntryData(context): Promise<WeightTrackingData>`
+- `loadBodyMeasurementData(context): Promise<WeightTrackingData>`
+- `loadWeightGoalData(context): Promise<WeightTrackingData>`
 - `upsertWeightEntry(context, formData): Promise<ActionResultLike>`
 - `deleteWeightEntry(context, formData): Promise<ActionResultLike>`
 - `upsertBodyMeasurement(context, formData): Promise<ActionResultLike>`

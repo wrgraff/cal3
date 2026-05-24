@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
+	import type { SubmitFunction } from '@sveltejs/kit';
 	import { CalendarDays, ChevronLeft, ChevronRight, Plus } from '@lucide/svelte';
 
 	import { Button, Card, Input, Label, LinkButton } from '$lib/components/ui';
@@ -29,6 +31,8 @@
 
 	let selectedDate = $state(todayIso());
 	let initialDateApplied = $state(false);
+	let savingWeight = $state(false);
+	let deletingWeight = $state(false);
 
 	const selectedEntry = $derived(data.entries.find((entry) => entry.date === selectedDate) ?? null);
 	const weightValues = $derived(
@@ -40,6 +44,28 @@
 		selectedDate = isIsoDate(initialDate) ? initialDate : todayIso();
 		initialDateApplied = true;
 	});
+
+	const enhanceWeightForm: SubmitFunction = () => {
+		savingWeight = true;
+		return async ({ update }) => {
+			try {
+				await update({ reset: false });
+			} finally {
+				savingWeight = false;
+			}
+		};
+	};
+
+	const enhanceDeleteForm: SubmitFunction = () => {
+		deletingWeight = true;
+		return async ({ update }) => {
+			try {
+				await update({ reset: false });
+			} finally {
+				deletingWeight = false;
+			}
+		};
+	};
 
 	function getWeightValues(
 		actionValues: WeightEntryFormValues | undefined,
@@ -102,7 +128,13 @@
 			<Plus size={18} aria-hidden="true" />
 			<h3 class="text-base font-semibold">Weight entry</h3>
 		</div>
-		<form method="POST" action="?/upsertWeightEntry" class="space-y-4" novalidate>
+		<form
+			method="POST"
+			action="?/upsertWeightEntry"
+			class="space-y-4"
+			novalidate
+			use:enhance={enhanceWeightForm}
+		>
 			<div class="grid gap-3 sm:grid-cols-3">
 				<div class="space-y-1.5">
 					<Label for="weight-date">Date</Label>
@@ -205,13 +237,15 @@
 						At least one weight value is required; evening weight is secondary.
 					</p>
 				{/if}
-				<Button type="submit">Save weight</Button>
+				<Button type="submit" loading={savingWeight}>Save weight</Button>
 			</div>
 		</form>
 		{#if selectedEntry}
-			<form method="POST" action="?/deleteWeightEntry">
+			<form method="POST" action="?/deleteWeightEntry" use:enhance={enhanceDeleteForm}>
 				<input type="hidden" name="id" value={selectedEntry.id} />
-				<Button type="submit" variant="destructive" size="sm">Delete selected weight entry</Button>
+				<Button type="submit" variant="destructive" size="sm" loading={deletingWeight}>
+					Delete selected weight entry
+				</Button>
 			</form>
 		{/if}
 	</Card>

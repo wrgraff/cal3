@@ -13,13 +13,15 @@ function createLoginRedirectUrl(next?: string): string {
 	return `/login?next=${encodeURIComponent(next)}`;
 }
 
-export function requireUser(
-	locals: Pick<App.Locals, 'user'>,
+export async function requireUser(
+	locals: Pick<App.Locals, 'safeGetUser'>,
 	options: RequireUserOptions = {}
-): AuthUser {
-	if (!locals.user) {
+): Promise<AuthUser> {
+	const user = await locals.safeGetUser();
+
+	if (!user) {
 		throw redirect(303, createLoginRedirectUrl(options.next));
 	}
 
-	return locals.user;
+	return user;
 }

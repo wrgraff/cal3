@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
+	import type { SubmitFunction } from '@sveltejs/kit';
 	import { Flag, Settings2 } from '@lucide/svelte';
 
 	import { Button, Card, Input, Label, LinkButton } from '$lib/components/ui';
@@ -22,9 +24,22 @@
 
 	let { data, action = null }: Props = $props();
 
+	let savingGoal = $state(false);
+
 	const dashboard = $derived(deriveWeightDashboard(data));
 	const goalValues = $derived(getGoalValues(action?.goal?.values));
 	const projectedTargetDate = $derived(getProjectedTargetDate(goalValues));
+
+	const enhanceGoalForm: SubmitFunction = () => {
+		savingGoal = true;
+		return async ({ update }) => {
+			try {
+				await update({ reset: false });
+			} finally {
+				savingGoal = false;
+			}
+		};
+	};
 
 	function getGoalValues(actionValues: WeightGoalFormValues | undefined): WeightGoalFormValues {
 		if (actionValues) return actionValues;
@@ -76,7 +91,13 @@
 			<Flag size={18} aria-hidden="true" />
 			<h3 class="text-base font-semibold">Update goal</h3>
 		</div>
-		<form method="POST" action="?/createGoalRevision" class="space-y-4" novalidate>
+		<form
+			method="POST"
+			action="?/createGoalRevision"
+			class="space-y-4"
+			novalidate
+			use:enhance={enhanceGoalForm}
+		>
 			<div class="grid gap-3 sm:grid-cols-3">
 				<div class="space-y-1.5">
 					<Label for="goal-start-date">Start date</Label>
@@ -151,7 +172,9 @@
 					{action.goal.formError}
 				</p>
 			{/if}
-			<div class="flex justify-end"><Button type="submit">Save goal revision</Button></div>
+			<div class="flex justify-end">
+				<Button type="submit" loading={savingGoal}>Save goal revision</Button>
+			</div>
 		</form>
 	</Card>
 </section>

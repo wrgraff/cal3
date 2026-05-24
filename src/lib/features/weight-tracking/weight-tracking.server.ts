@@ -8,6 +8,7 @@ import type {
 	WeightEntry,
 	WeightEntryFormValues,
 	WeightTrackingActionData,
+	WeightTrackingData,
 	WeightGoal,
 	WeightGoalFormValues,
 	WeightTag
@@ -19,6 +20,8 @@ interface WeightTrackingServerContext {
 	supabase: App.Locals['supabase'];
 	userId: string;
 }
+
+type WeightTrackingReadContext = Pick<WeightTrackingServerContext, 'supabase'>;
 
 function typedSupabase(supabase: App.Locals['supabase']): SupabaseClient<Database> {
 	return supabase as unknown as SupabaseClient<Database>;
@@ -110,47 +113,115 @@ function mapGoal(row: WeightGoalRow): WeightGoal {
 	};
 }
 
-export async function loadWeightTrackingData(context: WeightTrackingServerContext) {
-	const supabase = typedSupabase(context.supabase);
-	const [entriesResult, tagsResult, measurementsResult, goalsResult] = await Promise.all([
-		supabase
-			.from('weight_entries')
-			.select('id,date,morning_weight_kg,evening_weight_kg,created_at,updated_at')
-			.eq('user_id', context.userId)
-			.order('date', { ascending: true }),
-		supabase.from('weight_entry_tags').select('weight_entry_id,tag').eq('user_id', context.userId),
-		supabase
-			.from('body_measurements')
-			.select('id,date,chest_cm,waist_cm,hips_cm,created_at,updated_at')
-			.eq('user_id', context.userId)
-			.order('date', { ascending: true }),
-		supabase
-			.from('weight_goals')
-			.select(
-				'id,start_date,start_weight_kg,target_weight_kg,weekly_loss_kg,calculated_target_date,status,revision_of_goal_id,created_at,updated_at'
-			)
-			.eq('user_id', context.userId)
-			.order('created_at', { ascending: false })
-	]);
-
-	if (entriesResult.error) throw entriesResult.error;
-	if (tagsResult.error) throw tagsResult.error;
-	if (measurementsResult.error) throw measurementsResult.error;
-	if (goalsResult.error) throw goalsResult.error;
-
+function mapEntriesWithTags(
+	entries: WeightEntryRow[] | null,
+	tags: WeightEntryTagRow[] | null
+): WeightEntry[] {
 	const tagsByEntry = new Map<string, WeightTag[]>();
-	for (const tagRow of (tagsResult.data ?? []) as WeightEntryTagRow[]) {
+	for (const tagRow of tags ?? []) {
 		const existing = tagsByEntry.get(tagRow.weight_entry_id) ?? [];
 		existing.push(tagRow.tag);
 		tagsByEntry.set(tagRow.weight_entry_id, existing);
 	}
 
+	return (entries ?? []).map((row) => mapEntry(row, tagsByEntry.get(row.id) ?? []));
+}
+
+async function loadWeightEntries(context: WeightTrackingReadContext): Promise<WeightEntry[]> {
+	const supabase = typedSupabase(context.supabase);
+	const [entriesResult, tagsResult] = await Promise.all([
+		supabase
+			.from('weight_entries')
+			.select('id,date,morning_weight_kg,evening_weight_kg,created_at,updated_at')
+			.order('date', { ascending: true }),
+		supabase.from('weight_entry_tags').select('weight_entry_id,tag')
+	]);
+
+	if (entriesResult.error) throw entriesResult.error;
+	if (tagsResult.error) throw tagsResult.error;
+
+	return mapEntriesWithTags(
+		(entriesResult.data ?? []) as WeightEntryRow[],
+		(tagsResult.data ?? []) as WeightEntryTagRow[]
+	);
+}
+
+async function loadBodyMeasurements(
+	context: WeightTrackingReadContext
+): Promise<BodyMeasurement[]> {
+	const supabase = typedSupabase(context.supabase);
+	const measurementsResult = await supabase
+		.from('body_measurements')
+		.select('id,date,chest_cm,waist_cm,hips_cm,created_at,updated_at')
+		.order('date', { ascending: true });
+
+	if (measurementsResult.error) throw measurementsResult.error;
+
+	return ((measurementsResult.data ?? []) as BodyMeasurementRow[]).map(mapMeasurement);
+}
+
+async function loadWeightGoals(context: WeightTrackingReadContext): Promise<WeightGoal[]> {
+	const supabase = typedSupabase(context.supabase);
+	const goalsResult = await supabase
+		.from('weight_goals')
+		.select(
+			'id,start_date,start_weight_kg,target_weight_kg,weekly_loss_kg,calculated_target_date,status,revision_of_goal_id,created_at,updated_at'
+		)
+		.order('created_at', { ascending: false });
+
+	if (goalsResult.error) throw goalsResult.error;
+
+	return ((goalsResult.data ?? []) as WeightGoalRow[]).map(mapGoal);
+}
+
+export async function loadWeightTrackingData(
+	context: WeightTrackingReadContext
+): Promise<WeightTrackingData> {
+	const [entries, measurements, goals] = await Promise.all([
+		loadWeightEntries(context),
+		loadBodyMeasurements(context),
+		loadWeightGoals(context)
+	]);
+
 	return {
-		entries: ((entriesResult.data ?? []) as WeightEntryRow[]).map((row) =>
-			mapEntry(row, tagsByEntry.get(row.id) ?? [])
-		),
-		measurements: ((measurementsResult.data ?? []) as BodyMeasurementRow[]).map(mapMeasurement),
-		goals: ((goalsResult.data ?? []) as WeightGoalRow[]).map(mapGoal)
+		entries,
+		measurements,
+		goals
+	};
+}
+
+export async function loadWeightEntryData(
+	context: WeightTrackingReadContext
+): Promise<WeightTrackingData> {
+	return {
+		entries: await loadWeightEntries(context),
+		measurements: [],
+		goals: []
+	};
+}
+
+export async function loadBodyMeasurementData(
+	context: WeightTrackingReadContext
+): Promise<WeightTrackingData> {
+	return {
+		entries: [],
+		measurements: await loadBodyMeasurements(context),
+		goals: []
+	};
+}
+
+export async function loadWeightGoalData(
+	context: WeightTrackingReadContext
+): Promise<WeightTrackingData> {
+	const [entries, goals] = await Promise.all([
+		loadWeightEntries(context),
+		loadWeightGoals(context)
+	]);
+
+	return {
+		entries,
+		measurements: [],
+		goals
 	};
 }
 

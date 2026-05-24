@@ -2,6 +2,9 @@ export {
 	createGoalRevision,
 	deleteBodyMeasurement,
 	deleteWeightEntry,
+	loadBodyMeasurementData,
+	loadWeightEntryData,
+	loadWeightGoalData,
 	loadWeightTrackingData,
 	upsertBodyMeasurement,
 	upsertWeightEntry

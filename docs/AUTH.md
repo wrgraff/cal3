@@ -27,8 +27,8 @@ Sessions are stored in cookies, managed by `@supabase/ssr`. The flow:
 
 1. User signs in → Supabase returns access + refresh tokens.
 2. Tokens written to HTTP-only cookies (server side).
-3. On every request, `hooks.server.ts` reads the cookies, creates a per-request Supabase client with the session, and attaches it to `event.locals.supabase` and `event.locals.user`.
-4. Server `+page.server.ts` / `+server.ts` files can read `locals.user` and `locals.supabase`.
+3. On every request, `hooks.server.ts` creates a per-request Supabase client and attaches it to `event.locals.supabase`.
+4. Routes that need an authenticated user call `locals.safeGetUser()` or `requireUser(locals)`. This uses `supabase.auth.getUser()`, so the user is authenticated by Supabase Auth instead of trusted from cookie storage.
 5. Client-side, a `getUser()` call against the browser client picks up the same session via the cookies.
 
 The session is automatically refreshed on the server when the access token is near expiry.
@@ -86,19 +86,21 @@ Set `ADMIN_EMAILS` in `.env` (comma-separated):
 ADMIN_EMAILS="you@example.com,coauthor@example.com"
 ```
 
-On login, the server-side hook checks the user's email against this list and adds an `isAdmin: boolean` to `locals.user`. RLS policies and route guards can use it:
+When `locals.safeGetUser()` validates a user, it checks the user's email against this list and adds an `isAdmin: boolean`. RLS policies and route guards can use it:
 
 ```ts
 // +page.server.ts
 export const load = async ({ locals }) => {
-  if (!locals.user?.isAdmin) {
+  const user = await locals.safeGetUser();
+
+  if (!user?.isAdmin) {
     throw redirect(303, '/');
   }
   // ...admin-only data
 };
 ```
 
-For more robust roles (multiple roles, runtime-editable), introduce a `profiles` table with a `role` column and read it in the hook.
+For more robust roles (multiple roles, runtime-editable), introduce a `profiles` table with a `role` column and read it after `safeGetUser()` validates the auth user.
 
 ## Protected Routes
 
@@ -109,17 +111,28 @@ The `(auth)` route group covers login/signup. To protect other pages, use the `r
 import { requireUser } from '$lib/auth/require-user';
 
 export const load = async ({ locals }) => {
-  const user = requireUser(locals);
+  const user = await requireUser(locals);
   // user is guaranteed non-null here; otherwise requireUser throws a redirect to /login
   return { user };
 };
 ```
 
-For client-side protection (e.g. show a different UI for logged-in users on a public page), use the user from `+layout.server.ts` which is exposed to all child pages:
+For app-wide protection, put `requireUser()` in the nearest route group layout:
 
 ```ts
-// src/routes/+layout.server.ts
-export const load = async ({ locals }) => ({ user: locals.user });
+// src/routes/(app)/+layout.server.ts
+import { requireUser } from '$lib/auth';
+
+export const load = async ({ locals, url }) => ({
+  user: await requireUser(locals, { next: url.pathname })
+});
+```
+
+For client-side conditional UI on a public page, expose a user from that page or layout by calling `locals.safeGetUser()`:
+
+```ts
+// src/routes/public/+page.server.ts
+export const load = async ({ locals }) => ({ user: await locals.safeGetUser() });
 ```
 
 ```svelte

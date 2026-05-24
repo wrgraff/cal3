@@ -1,10 +1,14 @@
 import { requireUser } from '$lib/auth';
-import { createGoalRevision } from '$lib/features/weight-tracking/index.server';
-import type { Actions } from './$types';
+import { createGoalRevision, loadWeightGoalData } from '$lib/features/weight-tracking/index.server';
+import type { Actions, PageServerLoad } from './$types';
+
+export const load: PageServerLoad = async ({ locals }) => ({
+	weightTracking: await loadWeightGoalData({ supabase: locals.supabase })
+});
 
 export const actions: Actions = {
 	createGoalRevision: async ({ locals, request }) => {
-		const user = requireUser(locals, { next: '/form/goal' });
+		const user = await requireUser(locals, { next: '/form/goal' });
 		return createGoalRevision(
 			{ supabase: locals.supabase, userId: user.id },
 			await request.formData()

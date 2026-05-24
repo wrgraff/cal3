@@ -11,7 +11,7 @@ import {
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
-	if (locals.user) {
+	if (await locals.safeGetUser()) {
 		throw redirect(303, readNextFromUrl(url));
 	}
 

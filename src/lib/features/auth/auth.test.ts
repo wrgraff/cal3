@@ -25,11 +25,11 @@ describe('auth validation', () => {
 });
 
 describe('requireUser', () => {
-	it('redirects to login when user is missing', () => {
+	it('redirects to login when user is missing', async () => {
 		let thrown: unknown;
 
 		try {
-			requireUser({ user: null }, { next: '/form' });
+			await requireUser({ safeGetUser: async () => null }, { next: '/form' });
 		} catch (error) {
 			thrown = error;
 		}

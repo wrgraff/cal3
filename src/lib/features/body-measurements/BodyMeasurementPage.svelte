@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
+	import type { SubmitFunction } from '@sveltejs/kit';
 	import { CalendarDays, ChevronLeft, ChevronRight, Ruler } from '@lucide/svelte';
 
 	import { Button, Card, Input, Label, LinkButton } from '$lib/components/ui';
@@ -21,6 +23,8 @@
 
 	let selectedMeasurementDate = $state(todayIso());
 	let initialDateApplied = $state(false);
+	let savingMeasurement = $state(false);
+	let deletingMeasurement = $state(false);
 
 	const selectedMeasurement = $derived(
 		data.measurements.find((measurement) => measurement.date === selectedMeasurementDate) ?? null
@@ -38,6 +42,28 @@
 		selectedMeasurementDate = isIsoDate(initialDate) ? initialDate : todayIso();
 		initialDateApplied = true;
 	});
+
+	const enhanceMeasurementForm: SubmitFunction = () => {
+		savingMeasurement = true;
+		return async ({ update }) => {
+			try {
+				await update({ reset: false });
+			} finally {
+				savingMeasurement = false;
+			}
+		};
+	};
+
+	const enhanceDeleteForm: SubmitFunction = () => {
+		deletingMeasurement = true;
+		return async ({ update }) => {
+			try {
+				await update({ reset: false });
+			} finally {
+				deletingMeasurement = false;
+			}
+		};
+	};
 
 	function getMeasurementValues(
 		actionValues: BodyMeasurementFormValues | undefined,
@@ -104,7 +130,13 @@
 			<Ruler size={18} aria-hidden="true" />
 			<h3 class="text-base font-semibold">Body measurements</h3>
 		</div>
-		<form method="POST" action="?/upsertBodyMeasurement" class="space-y-4" novalidate>
+		<form
+			method="POST"
+			action="?/upsertBodyMeasurement"
+			class="space-y-4"
+			novalidate
+			use:enhance={enhanceMeasurementForm}
+		>
 			<div class="grid gap-3 sm:grid-cols-4">
 				<div class="space-y-1.5">
 					<Label for="measurement-date">Date</Label>
@@ -194,12 +226,16 @@
 					{action.bodyMeasurement.formError}
 				</p>
 			{/if}
-			<div class="flex justify-end"><Button type="submit">Save measurements</Button></div>
+			<div class="flex justify-end">
+				<Button type="submit" loading={savingMeasurement}>Save measurements</Button>
+			</div>
 		</form>
 		{#if selectedMeasurement}
-			<form method="POST" action="?/deleteBodyMeasurement">
+			<form method="POST" action="?/deleteBodyMeasurement" use:enhance={enhanceDeleteForm}>
 				<input type="hidden" name="id" value={selectedMeasurement.id} />
-				<Button type="submit" variant="destructive" size="sm">Delete selected measurements</Button>
+				<Button type="submit" variant="destructive" size="sm" loading={deletingMeasurement}>
+					Delete selected measurements
+				</Button>
 			</form>
 		{/if}
 	</Card>
