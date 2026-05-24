@@ -128,7 +128,7 @@
 						<button
 							type="button"
 							aria-pressed={chartRange === rangeOption}
-							class={`rounded-sm px-2 py-1 text-xs font-medium transition-colors ${chartRange === rangeOption ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+							class={`touch-manipulation rounded-sm px-2 py-1 text-xs font-medium transition select-none active:scale-95 ${chartRange === rangeOption ? 'bg-background text-foreground active:bg-background/80 shadow-sm' : 'text-muted-foreground hover:text-foreground active:bg-background/70 active:text-foreground'}`}
 							onclick={() => (chartRange = rangeOption as ChartRange)}
 						>
 							{rangeOption.toUpperCase()}

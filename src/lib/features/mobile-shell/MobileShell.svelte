@@ -19,10 +19,10 @@
 		const isActive = tab.id === activeTabId;
 
 		return cn(
-			'flex min-h-14 w-full flex-col items-center justify-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors',
+			'flex min-h-14 w-full touch-manipulation select-none flex-col items-center justify-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition active:scale-95',
 			isActive
-				? 'bg-secondary text-foreground'
-				: 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+				? 'bg-secondary text-foreground active:bg-secondary/80'
+				: 'text-muted-foreground hover:bg-accent hover:text-accent-foreground active:bg-accent active:text-accent-foreground'
 		);
 	}
 </script>
@@ -40,7 +40,7 @@
 
 	<nav
 		aria-label="Primary"
-		class="bg-background/95 supports-[backdrop-filter]:bg-background/80 sticky bottom-0 border-t backdrop-blur"
+		class="bg-background/95 supports-[backdrop-filter]:bg-background/80 fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-(--mobile-shell-max-width) border-x border-t backdrop-blur"
 	>
 		<ul class="grid grid-cols-4 gap-1 p-2">
 			{#each APP_TABS as tab (tab.id)}

@@ -10,13 +10,17 @@
 	export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
 
 	export const buttonVariants: Record<ButtonVariant, string> = {
-		default: 'bg-primary text-primary-foreground shadow-sm hover:bg-primary/90',
-		secondary: 'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',
-		destructive: 'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
+		default:
+			'bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 active:bg-primary/80',
+		secondary:
+			'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 active:bg-secondary/70',
+		destructive:
+			'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 active:bg-destructive/80',
 		outline:
-			'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',
-		ghost: 'hover:bg-accent hover:text-accent-foreground',
-		link: 'text-primary underline-offset-4 hover:underline'
+			'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground active:bg-accent active:text-accent-foreground',
+		ghost:
+			'hover:bg-accent hover:text-accent-foreground active:bg-accent active:text-accent-foreground',
+		link: 'text-primary underline-offset-4 hover:underline active:text-primary/80 active:underline'
 	};
 
 	export const buttonSizes: Record<ButtonSize, string> = {
@@ -40,8 +44,8 @@
 		class: className
 	}: ButtonStyleProps = {}): string {
 		return cn(
-			'inline-flex items-center justify-center gap-2 rounded-md font-medium',
-			'focus-visible:ring-ring transition-colors focus-visible:ring-2 focus-visible:ring-offset-2',
+			'inline-flex touch-manipulation select-none items-center justify-center gap-2 rounded-md font-medium',
+			'focus-visible:ring-ring transition active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2',
 			'focus-visible:ring-offset-background focus-visible:outline-none',
 			'disabled:pointer-events-none disabled:opacity-50',
 			buttonVariants[variant],
