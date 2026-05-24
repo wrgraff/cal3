@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Provides the mobile-first app frame for the main product area: fixed max width, top title bar, and bottom tab navigation for `Intake`, `Form`, `Activity`, and `Settings`. It defines navigation shell structure only and does not implement tracker business logic.
+Provides the mobile-first app frame for the main product area: fixed max width, top title bar, and bottom tab navigation for `Intake`, `Form`, `Activity`, and `Settings`. It defines navigation shell structure only and does not implement tracker business logic. It also owns cross-route navigation loading feedback for server-loaded screens.
 
 ## Public API
 
@@ -36,12 +36,13 @@ N/A
 
 ## State
 
-Owns only presentational derived state for active tab resolution from the current pathname. No persistent or cross-route writable state.
+Owns only presentational derived state for active tab resolution from the current pathname and current SvelteKit navigation. No persistent or cross-route writable state.
 
 ## A11y notes
 
 - Bottom navigation uses semantic `<nav>` and link semantics.
 - Current tab uses `aria-current="page"`.
+- Pending navigation marks main content with `aria-busy` and exposes a screen-reader-only status.
 - Disabled `Activity` tab is rendered as non-interactive content with `aria-disabled="true"`.
 
 ## Out of scope
