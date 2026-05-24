@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Provides the mobile-first app frame for the main product area: fixed max width, top title bar, and bottom tab navigation for `Intake`, `Form`, `Activity`, and `Settings`. It defines navigation shell structure only and does not implement tracker business logic. It also owns cross-route navigation loading feedback for server-loaded screens.
+Provides the mobile-first app frame for the main product area: fixed max width, top title bar, and bottom tab navigation for `Intake`, `Shape`, `Activity`, and `Settings`. It defines navigation shell structure only and does not implement tracker business logic. It also owns cross-route navigation loading feedback for server-loaded screens.
 
 ## Public API
 
@@ -19,7 +19,7 @@ Provides the mobile-first app frame for the main product area: fixed max width, 
   - Tab configuration used by the shell.
 - `getActiveTabId(pathname: string): AppTabId`
   - Maps pathname to active tab id.
-- `AppTabId` — `'intake' | 'form' | 'activity' | 'settings'`
+- `AppTabId` — `'intake' | 'shape' | 'activity' | 'settings'`
 - `AppTab` — `{ id: AppTabId; label: string; href: string; disabled?: boolean }`
 
 ## Dependencies

@@ -71,7 +71,7 @@
 
 <section class="space-y-5" aria-labelledby="goal-revision-heading">
 	<header class="space-y-3">
-		<LinkButton href="/form" variant="ghost" size="sm">Back to Form</LinkButton>
+		<LinkButton href="/shape" variant="ghost" size="sm">Back to Shape</LinkButton>
 		<div>
 			<p class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Progress</p>
 			<h2 id="goal-revision-heading" class="text-2xl font-semibold tracking-tight">

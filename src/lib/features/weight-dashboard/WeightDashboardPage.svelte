@@ -23,8 +23,8 @@
 	let chartRange = $state<ChartRange>('goal');
 
 	const dashboard = $derived(deriveWeightDashboard(data));
-	const entryHref = $derived(`/form/weight?date=${todayIso()}`);
-	const measurementHref = $derived(`/form/measurements?date=${todayIso()}`);
+	const entryHref = $derived(`/shape/weight?date=${todayIso()}`);
+	const measurementHref = $derived(`/shape/measurements?date=${todayIso()}`);
 
 	function statusTone(status: string): string {
 		if (status === 'ahead' || status === 'reached') return 'bg-success text-success-foreground';
@@ -39,12 +39,12 @@
 	}
 </script>
 
-<section class="space-y-5 pb-20" aria-labelledby="form-heading">
+<section class="space-y-5 pb-20" aria-labelledby="shape-heading">
 	<header class="space-y-3">
 		<div class="flex items-start justify-between gap-3">
 			<div>
 				<p class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Today</p>
-				<h2 id="form-heading" class="text-2xl font-semibold tracking-tight">Form</h2>
+				<h2 id="shape-heading" class="text-2xl font-semibold tracking-tight">Shape</h2>
 			</div>
 			<div
 				class="bg-secondary text-secondary-foreground flex min-h-9 items-center gap-2 rounded-md px-3 text-sm font-medium"
@@ -137,11 +137,11 @@
 				</div>
 			</div>
 			<div class="grid gap-2 sm:grid-cols-2">
-				<LinkButton href="/form/goal" variant="outline" class="w-full">
+				<LinkButton href="/shape/goal" variant="outline" class="w-full">
 					<Settings2 size={16} aria-hidden="true" />
 					Goal settings
 				</LinkButton>
-				<LinkButton href="/form/history" variant="outline" class="w-full">
+				<LinkButton href="/shape/history" variant="outline" class="w-full">
 					<History size={16} aria-hidden="true" />
 					History
 				</LinkButton>

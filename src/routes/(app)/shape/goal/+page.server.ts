@@ -8,7 +8,7 @@ export const load: PageServerLoad = async ({ locals }) => ({
 
 export const actions: Actions = {
 	createGoalRevision: async ({ locals, request }) => {
-		const user = await requireUser(locals, { next: '/form/goal' });
+		const user = await requireUser(locals, { next: '/shape/goal' });
 		return createGoalRevision(
 			{ supabase: locals.supabase, userId: user.id },
 			await request.formData()

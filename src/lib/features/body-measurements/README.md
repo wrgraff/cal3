@@ -2,14 +2,14 @@
 
 ## Purpose
 
-The `body-measurements` feature renders the `/form/measurements` screen for adding, editing, and deleting chest, waist, and hips measurements. It does not render weight entry forms, dashboard charts, goal settings, or history tables.
+The `body-measurements` feature renders the `/shape/measurements` screen for adding, editing, and deleting chest, waist, and hips measurements. It does not render weight entry forms, dashboard charts, goal settings, or history tables.
 
 ## Public API
 
 Exports from `index.ts`:
 
 - `BodyMeasurementPage: Component<{ data: WeightTrackingData; initialDate?: string; action?: WeightTrackingActionData | null }>`
-  - `data`: measurements loaded by the Form route layout.
+  - `data`: measurements loaded by the Shape route layout.
   - `initialDate`: optional selected date from the route query string.
   - `action`: optional SvelteKit action data for validation and success messages.
 

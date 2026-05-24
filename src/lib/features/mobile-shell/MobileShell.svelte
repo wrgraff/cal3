@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { navigating, page } from '$app/state';
-	import { Dumbbell, Loader2, Ruler, Settings, UtensilsCrossed } from '@lucide/svelte';
+	import { Dumbbell, Loader2, Settings, Shirt, UtensilsCrossed } from '@lucide/svelte';
 	import type { Snippet } from 'svelte';
 	import { cn } from '$lib/utils/cn';
 	import { APP_TABS, getActiveTabId } from './mobile-shell.utils';
@@ -13,7 +13,6 @@
 	let { children }: Props = $props();
 
 	const activeTabId = $derived(getActiveTabId(page.url.pathname));
-	const activeTab = $derived(APP_TABS.find((tab) => tab.id === activeTabId));
 	const isLoading = $derived(Boolean(navigating.to));
 	const pendingPathname = $derived(navigating.to?.url.pathname ?? null);
 	const pendingTabId = $derived(pendingPathname ? getActiveTabId(pendingPathname) : null);
@@ -40,14 +39,11 @@
 <div
 	class="bg-background mx-auto flex min-h-dvh w-full max-w-(--mobile-shell-max-width) flex-col border-x"
 >
-	<header class="relative border-b px-3 py-3 sm:px-4">
-		<h1 class="text-base font-semibold tracking-tight">{activeTab?.label ?? 'Intake'}</h1>
-		{#if isLoading}
-			<div class="bg-primary/15 absolute inset-x-0 bottom-0 h-0.5 overflow-hidden">
-				<div class="bg-primary mobile-shell-loading-bar h-full w-1/3"></div>
-			</div>
-		{/if}
-	</header>
+	{#if isLoading}
+		<div class="bg-primary/15 h-0.5 overflow-hidden">
+			<div class="bg-primary mobile-shell-loading-bar h-full w-1/3"></div>
+		</div>
+	{/if}
 
 	<main class="flex-1 overflow-y-auto px-3 py-4 pb-24 sm:px-4" aria-busy={isLoading || undefined}>
 		{#if isLoading}
@@ -70,8 +66,8 @@
 						>
 							{#if tab.id === 'intake'}
 								<UtensilsCrossed size={18} aria-hidden="true" />
-							{:else if tab.id === 'form'}
-								<Ruler size={18} aria-hidden="true" />
+							{:else if tab.id === 'shape'}
+								<Shirt size={18} aria-hidden="true" />
 							{:else if tab.id === 'activity'}
 								<Dumbbell size={18} aria-hidden="true" />
 							{:else}
@@ -90,8 +86,8 @@
 								<Loader2 size={18} class="animate-spin" aria-hidden="true" />
 							{:else if tab.id === 'intake'}
 								<UtensilsCrossed size={18} aria-hidden="true" />
-							{:else if tab.id === 'form'}
-								<Ruler size={18} aria-hidden="true" />
+							{:else if tab.id === 'shape'}
+								<Shirt size={18} aria-hidden="true" />
 							{:else if tab.id === 'activity'}
 								<Dumbbell size={18} aria-hidden="true" />
 							{:else}

@@ -2,14 +2,14 @@
 
 ## Purpose
 
-The `weight-entry` feature renders the `/form/weight` screen for adding, editing, and deleting daily weight entries. It does not render dashboard charts, body measurement forms, goal settings, or history tables.
+The `weight-entry` feature renders the `/shape/weight` screen for adding, editing, and deleting daily weight entries. It does not render dashboard charts, body measurement forms, goal settings, or history tables.
 
 ## Public API
 
 Exports from `index.ts`:
 
 - `WeightEntryPage: Component<{ data: WeightTrackingData; initialDate?: string; action?: WeightTrackingActionData | null }>`
-  - `data`: entries loaded by the Form route layout.
+  - `data`: entries loaded by the Shape route layout.
   - `initialDate`: optional selected date from the route query string.
   - `action`: optional SvelteKit action data for validation and success messages.
 

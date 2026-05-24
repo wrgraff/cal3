@@ -13,9 +13,9 @@ test('mobile shell routes have no detectable a11y issues @a11y @a11y-full', asyn
 
 	await page
 		.getByRole('navigation', { name: 'Primary' })
-		.getByRole('link', { name: 'Form' })
+		.getByRole('link', { name: 'Shape' })
 		.click();
-	await expect(page).toHaveURL(/\/login\?next=%2Fform$/);
+	await expect(page).toHaveURL(/\/login\?next=%2Fshape$/);
 	await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible();
 	await expectNoA11yViolations(page);
 

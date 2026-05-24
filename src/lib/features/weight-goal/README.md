@@ -2,14 +2,14 @@
 
 ## Purpose
 
-The `weight-goal` feature renders the `/form/goal` screen for creating a new revision of the active weight goal. It does not render entry forms, charts, or history tables.
+The `weight-goal` feature renders the `/shape/goal` screen for creating a new revision of the active weight goal. It does not render entry forms, charts, or history tables.
 
 ## Public API
 
 Exports from `index.ts`:
 
 - `WeightGoalPage: Component<{ data: WeightTrackingData; action?: WeightTrackingActionData | null }>`
-  - `data`: entries and goals loaded by the Form route layout.
+  - `data`: entries and goals loaded by the Shape route layout.
   - `action`: optional SvelteKit action data for validation and success messages.
 
 ## Dependencies

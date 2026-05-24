@@ -2,14 +2,14 @@
 
 ## Purpose
 
-The `weight-dashboard` feature renders the `/form` dashboard: current weight summary, progress chart, measurement chart, and navigation into Form-area tasks. It does not submit entries, update goals, or render history tables.
+The `weight-dashboard` feature renders the `/shape` dashboard: current weight summary, progress chart, measurement chart, and navigation into Shape-area tasks. It does not submit entries, update goals, or render history tables.
 
 ## Public API
 
 Exports from `index.ts`:
 
 - `WeightDashboardPage: Component<{ data: WeightTrackingData }>`
-  - `data`: weight entries, body measurements, and goals loaded by the Form route layout.
+  - `data`: weight entries, body measurements, and goals loaded by the Shape route layout.
 
 ## Dependencies
 

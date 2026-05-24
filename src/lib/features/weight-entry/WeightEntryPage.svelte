@@ -84,7 +84,7 @@
 
 <section class="space-y-5" aria-labelledby="weight-entry-heading">
 	<header class="space-y-3">
-		<LinkButton href="/form" variant="ghost" size="sm">Back to Form</LinkButton>
+		<LinkButton href="/shape" variant="ghost" size="sm">Back to Shape</LinkButton>
 		<div class="flex items-start justify-between gap-3">
 			<div>
 				<p class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Weight</p>

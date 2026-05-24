@@ -29,12 +29,12 @@ describe('requireUser', () => {
 		let thrown: unknown;
 
 		try {
-			await requireUser({ safeGetUser: async () => null }, { next: '/form' });
+			await requireUser({ safeGetUser: async () => null }, { next: '/shape' });
 		} catch (error) {
 			thrown = error;
 		}
 
-		expect(thrown).toMatchObject({ status: 303, location: '/login?next=%2Fform' });
+		expect(thrown).toMatchObject({ status: 303, location: '/login?next=%2Fshape' });
 	});
 });
 

@@ -1,4 +1,4 @@
-export type AppTabId = 'intake' | 'form' | 'activity' | 'settings';
+export type AppTabId = 'intake' | 'shape' | 'activity' | 'settings';
 
 export interface AppTab {
 	id: AppTabId;

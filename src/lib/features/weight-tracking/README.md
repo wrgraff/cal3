@@ -14,7 +14,7 @@ Exports from `index.ts`:
   - `calculateTargetDate(goal): string`
   - `plannedWeight(goal, date): number | null`
   - `getForecastEndpoint(input): ForecastEndpoint | null`
-  - date and formatting helpers used by Form-area features.
+  - date and formatting helpers used by Shape-area features.
 - Constants:
   - `WEIGHT_TAGS`
   - `TAG_LABELS`

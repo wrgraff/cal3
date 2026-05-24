@@ -18,14 +18,14 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 export const actions: Actions = {
 	upsertWeightEntry: async ({ locals, request }) => {
-		const user = await requireUser(locals, { next: '/form/weight' });
+		const user = await requireUser(locals, { next: '/shape/weight' });
 		return upsertWeightEntry(
 			{ supabase: locals.supabase, userId: user.id },
 			await request.formData()
 		);
 	},
 	deleteWeightEntry: async ({ locals, request }) => {
-		const user = await requireUser(locals, { next: '/form/weight' });
+		const user = await requireUser(locals, { next: '/shape/weight' });
 		return deleteWeightEntry(
 			{ supabase: locals.supabase, userId: user.id },
 			await request.formData()

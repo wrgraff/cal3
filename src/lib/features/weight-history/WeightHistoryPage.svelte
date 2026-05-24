@@ -22,11 +22,11 @@
 
 <section class="space-y-5" aria-labelledby="history-heading">
 	<header class="space-y-3">
-		<LinkButton href="/form" variant="ghost" size="sm">Back to Form</LinkButton>
+		<LinkButton href="/shape" variant="ghost" size="sm">Back to Shape</LinkButton>
 		<div class="flex items-center gap-2">
 			<History size={22} aria-hidden="true" />
 			<div>
-				<p class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Form</p>
+				<p class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Shape</p>
 				<h2 id="history-heading" class="text-2xl font-semibold tracking-tight">History</h2>
 			</div>
 		</div>
@@ -35,7 +35,7 @@
 	<Card class="space-y-4 p-4">
 		<div class="flex items-center justify-between gap-3">
 			<h3 class="text-base font-semibold">Weight entries</h3>
-			<LinkButton href="/form/weight" variant="outline" size="sm">Add weight</LinkButton>
+			<LinkButton href="/shape/weight" variant="outline" size="sm">Add weight</LinkButton>
 		</div>
 		<div class="overflow-x-auto">
 			<table class="w-full text-left text-sm">
@@ -52,7 +52,7 @@
 						<tr>
 							<td class="py-2 pr-3">
 								<a
-									href={`/form/weight?date=${entry.date}`}
+									href={`/shape/weight?date=${entry.date}`}
 									class="text-primary underline-offset-4 hover:underline"
 								>
 									{prettyDate(entry.date)}
@@ -77,7 +77,8 @@
 	<Card class="space-y-4 p-4">
 		<div class="flex items-center justify-between gap-3">
 			<h3 class="text-base font-semibold">Body measurements</h3>
-			<LinkButton href="/form/measurements" variant="outline" size="sm">Add measurements</LinkButton
+			<LinkButton href="/shape/measurements" variant="outline" size="sm"
+				>Add measurements</LinkButton
 			>
 		</div>
 		<div class="overflow-x-auto">
@@ -95,7 +96,7 @@
 						<tr>
 							<td class="py-2 pr-3">
 								<a
-									href={`/form/measurements?date=${measurement.date}`}
+									href={`/shape/measurements?date=${measurement.date}`}
 									class="text-primary underline-offset-4 hover:underline"
 								>
 									{prettyDate(measurement.date)}
@@ -120,7 +121,7 @@
 	<Card class="space-y-4 p-4">
 		<div class="flex items-center justify-between gap-3">
 			<h3 class="text-base font-semibold">Goals</h3>
-			<LinkButton href="/form/goal" variant="outline" size="sm">Update goal</LinkButton>
+			<LinkButton href="/shape/goal" variant="outline" size="sm">Update goal</LinkButton>
 		</div>
 		<div class="overflow-x-auto">
 			<table class="w-full text-left text-sm">

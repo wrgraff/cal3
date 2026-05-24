@@ -18,14 +18,14 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 export const actions: Actions = {
 	upsertBodyMeasurement: async ({ locals, request }) => {
-		const user = await requireUser(locals, { next: '/form/measurements' });
+		const user = await requireUser(locals, { next: '/shape/measurements' });
 		return upsertBodyMeasurement(
 			{ supabase: locals.supabase, userId: user.id },
 			await request.formData()
 		);
 	},
 	deleteBodyMeasurement: async ({ locals, request }) => {
-		const user = await requireUser(locals, { next: '/form/measurements' });
+		const user = await requireUser(locals, { next: '/shape/measurements' });
 		return deleteBodyMeasurement(
 			{ supabase: locals.supabase, userId: user.id },
 			await request.formData()

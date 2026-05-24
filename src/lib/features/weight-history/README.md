@@ -2,14 +2,14 @@
 
 ## Purpose
 
-The `weight-history` feature renders the `/form/history` read-only history for weight entries, body measurements, and goal revisions. It does not submit edits directly; date links route users to the relevant edit screen.
+The `weight-history` feature renders the `/shape/history` read-only history for weight entries, body measurements, and goal revisions. It does not submit edits directly; date links route users to the relevant edit screen.
 
 ## Public API
 
 Exports from `index.ts`:
 
 - `WeightHistoryPage: Component<{ data: WeightTrackingData }>`
-  - `data`: entries, measurements, and goals loaded by the Form route layout.
+  - `data`: entries, measurements, and goals loaded by the Shape route layout.
 
 ## Dependencies
 
