@@ -11,7 +11,7 @@
 </script>
 
 <svelte:head>
-	<title>Goal settings | cal3</title>
+	<title>Goal settings | cal³</title>
 	<meta name="description" content="Update the active weight goal." />
 </svelte:head>
 

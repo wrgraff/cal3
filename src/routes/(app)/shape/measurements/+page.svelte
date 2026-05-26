@@ -27,7 +27,7 @@
 </script>
 
 <svelte:head>
-	<title>Update measurements | cal3</title>
+	<title>Update measurements | cal³</title>
 	<meta name="description" content="Update body measurements." />
 </svelte:head>
 

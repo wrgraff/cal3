@@ -25,7 +25,7 @@
 </script>
 
 <svelte:head>
-	<title>Add weight | cal3</title>
+	<title>Add weight | cal³</title>
 	<meta name="description" content="Add or update a daily weight entry." />
 </svelte:head>
 

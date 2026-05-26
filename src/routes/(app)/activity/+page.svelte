@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Activity | cal3</title>
+	<title>Activity | cal³</title>
 	<meta name="description" content="Activity tracker placeholder." />
 </svelte:head>
 

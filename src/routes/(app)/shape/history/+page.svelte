@@ -10,7 +10,7 @@
 </script>
 
 <svelte:head>
-	<title>History | cal3</title>
+	<title>History | cal³</title>
 	<meta name="description" content="Weight, measurements, and goal history." />
 </svelte:head>
 

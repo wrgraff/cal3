@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Intake | cal3</title>
+	<title>Intake | cal³</title>
 	<meta name="description" content="Calorie intake tracker." />
 </svelte:head>
 

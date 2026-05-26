@@ -12,8 +12,8 @@ export default defineConfig({
 			registerType: 'autoUpdate',
 			injectRegister: 'auto',
 			manifest: {
-				name: 'cal3',
-				short_name: 'cal3',
+				name: 'cal³',
+				short_name: 'cal³',
 				description: 'Calories, weight and activity tracker',
 				theme_color: '#e44093',
 				background_color: '#ffffff',

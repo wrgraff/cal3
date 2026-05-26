@@ -1,8 +1,8 @@
-# cal3
+# cal<sup>3</sup>
 
 > Calories, weight and activity tracker
 
-Built from **cal3** — a SvelteKit + Supabase template designed for **AI-agent-driven development** with strict feature isolation, a token-driven design system, and a workflow for porting prototypes from Claude Design / Figma Make / Lovable.
+Built from **cal<sup>3</sup>** — a SvelteKit + Supabase template designed for **AI-agent-driven development** with strict feature isolation, a token-driven design system, and a workflow for porting prototypes from Claude Design / Figma Make / Lovable.
 
 ## Rules
 

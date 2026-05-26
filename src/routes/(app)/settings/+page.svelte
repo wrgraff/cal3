@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Settings | cal3</title>
+	<title>Settings | cal³</title>
 	<meta name="description" content="App settings and profile preferences." />
 </svelte:head>
 

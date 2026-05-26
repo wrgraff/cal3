@@ -10,7 +10,7 @@
 </script>
 
 <svelte:head>
-	<title>Shape | cal3</title>
+	<title>Shape | cal³</title>
 	<meta name="description" content="Weight and body measurements tracker." />
 </svelte:head>
 
