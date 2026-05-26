@@ -13,9 +13,11 @@
 	let { children }: Props = $props();
 
 	const activeTabId = $derived(getActiveTabId(page.url.pathname));
-	const isLoading = $derived(Boolean(navigating.to));
 	const pendingPathname = $derived(navigating.to?.url.pathname ?? null);
 	const pendingTabId = $derived(pendingPathname ? getActiveTabId(pendingPathname) : null);
+	const isLoading = $derived(
+		Boolean(navigating.to) && pendingTabId != null && pendingTabId !== activeTabId
+	);
 
 	function tabClass(tab: AppTab): string {
 		const isActive = tab.id === activeTabId;

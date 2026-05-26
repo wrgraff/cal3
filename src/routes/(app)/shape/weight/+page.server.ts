@@ -1,21 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import { requireUser } from '$lib/auth';
-import { isIsoDate, todayIso, upsertWeightEntry } from '$lib/features/weight-tracking/index.server';
-import type { Actions, PageServerLoad } from './$types';
-
-export const load: PageServerLoad = async ({ url }) => {
-	const date = url.searchParams.get('date');
-	const currentWeightParam = url.searchParams.get('currentWeightKg');
-	const currentWeightNumber = currentWeightParam == null ? NaN : Number(currentWeightParam);
-
-	return {
-		initialDate: date && isIsoDate(date) ? date : todayIso(),
-		initialWeightKg:
-			Number.isFinite(currentWeightNumber) && currentWeightNumber > 0
-				? `${currentWeightNumber}`
-				: ''
-	};
-};
+import { upsertWeightEntry } from '$lib/features/weight-tracking/index.server';
+import type { Actions } from './$types';
 
 export const actions: Actions = {
 	upsertWeightEntry: async ({ locals, request }) => {
