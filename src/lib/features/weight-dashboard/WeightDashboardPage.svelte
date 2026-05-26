@@ -24,6 +24,11 @@
 	let chartRange = $state<ChartRange>('2w');
 
 	const dashboard = $derived(deriveWeightDashboard(data));
+	const totalChangeSinceGoalStartKg = $derived(
+		dashboard.activeGoal != null && dashboard.summary.currentWeightKg != null
+			? dashboard.summary.currentWeightKg - dashboard.activeGoal.startWeightKg
+			: null
+	);
 	const entryHref = $derived(buildWeightEntryHref(todayIso(), dashboard.summary.currentWeightKg));
 	const measurementHref = $derived(
 		buildMeasurementEntryHref(todayIso(), dashboard.measurementSummary.latest)
@@ -123,7 +128,6 @@
 		</Card>
 
 		<Card class="p-4">
-			<p class="text-muted-foreground text-sm">Status</p>
 			<div class="mt-2 flex flex-wrap items-center gap-2">
 				<span
 					class={`rounded-full px-2.5 py-1 text-xs font-medium ${statusTone(dashboard.summary.status)}`}
@@ -135,7 +139,7 @@
 				>
 			</div>
 			<p class="text-muted-foreground mt-2 text-xs">
-				{dashboard.summary.daysOfData}/7 measured days for forecast.
+				Total since goal start: {deltaLabel(totalChangeSinceGoalStartKg, 'kg')}
 			</p>
 		</Card>
 	</div>
