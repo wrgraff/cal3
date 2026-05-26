@@ -276,15 +276,18 @@ export async function upsertWeightEntry(context: WeightTrackingServerContext, fo
 		return fail(400, { weightEntry: { values, fieldErrors } });
 	}
 
-	const morningWeightKg = values.timeOfDay === 'morning' ? (weightKg ?? undefined) : undefined;
-	const eveningWeightKg = values.timeOfDay === 'evening' ? (weightKg ?? undefined) : undefined;
-
-	const { error } = await supabase.rpc('upsert_weight_entry_with_tags', {
+	const rpcArgs: Database['public']['Functions']['upsert_weight_entry_with_tags']['Args'] = {
 		p_date: values.date,
-		p_morning_weight_kg: morningWeightKg ?? undefined,
-		p_evening_weight_kg: eveningWeightKg ?? undefined,
 		p_tags: values.tags
-	});
+	};
+
+	if (values.timeOfDay === 'morning') {
+		rpcArgs.p_morning_weight_kg = weightKg ?? undefined;
+	} else {
+		rpcArgs.p_evening_weight_kg = weightKg ?? undefined;
+	}
+
+	const { error } = await supabase.rpc('upsert_weight_entry_with_tags', rpcArgs);
 
 	if (error) {
 		return fail(500, { weightEntry: { values, formError: 'Could not save weight entry.' } });
